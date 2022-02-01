@@ -19,7 +19,16 @@ func main() {
 }
 
 func searchInApi(endOfUrl string) string {
-	json, err := http.Get(fmt.Sprintf("https://groupietrackers.herokuapp.com/api/%s", endOfUrl))
+	var url string
+	if endOfUrl == "" {
+		url = "https://groupietrackers.herokuapp.com/api"
+	} else {
+		url = fmt.Sprintf("https://groupietrackers.herokuapp.com/api/%s", endOfUrl)
+	}
+
+	json, err := http.Get(url)
+
+	fmt.Print(json)
 	if err != nil {
 		return err.Error()
 	}
