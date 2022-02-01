@@ -5,20 +5,29 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
-	response, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+	// Apply a function in this page (don't worry i diplay every time a html template ^^)
+	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(rw, searchInApi(""))
+	})
+
+	// Open the server (let's go)
+	fmt.Println("Open server at http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func searchInApi(endOfUrl string) string {
+	json, err := http.Get(fmt.Sprintf("https://groupietrackers.herokuapp.com/api/%s", endOfUrl))
 	if err != nil {
-		fmt.Print(err.Error())
-		os.Exit(1)
+		return err.Error()
 	}
 
-	responseData, err := ioutil.ReadAll(response.Body)
+	content, err := ioutil.ReadAll(json.Body)
 	if err != nil {
-		log.Fatal(err)
+		return err.Error()
 	}
-	fmt.Println(string(responseData))
 
+	return string(content)
 }
