@@ -10,7 +10,9 @@ import (
 func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(rw, searchInApi(""))
+		for i := 0; i <= 52; i++ {
+			fmt.Fprint(rw, searchInApi(fmt.Sprintf("artists/%d", i)))
+		}
 	})
 
 	// Open the server (let's go)
