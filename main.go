@@ -7,6 +7,12 @@ import (
 	"net/http"
 )
 
+type Locations struct {
+	ID        int
+	Locations []string
+	Dates     string
+}
+
 func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
@@ -19,7 +25,7 @@ func main() {
 }
 
 func searchInApi(endOfUrl string) string {
-	json, err := http.Get(fmt.Sprintf("https://groupietrackers.herokuapp.com/api/%s", endOfUrl))
+	json, err := http.Get(fmt.Sprintf("https://groupietrackers.herokuapp.com/api%s", endOfUrl))
 	if err != nil {
 		return err.Error()
 	}
