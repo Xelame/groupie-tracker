@@ -30,22 +30,16 @@ type Dates struct {
 }
 
 type Relations struct {
-	DunedinNewZealand []string
-	GeorgiaUsa        []string
-	LosAngelesUsa     []string
-	NagoyaJapan       []string
-	NorthCarolinaUsa  []string
-	OsakaJapan        []string
-	PenroseNewZealand []string
-	SaitamaJapan      []string
+	ID             int
+	DatesLocations interface{}
 }
 
 func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		data := &Locations{}
+		data := &Relations{}
 		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("locations/%d", i), data)
+			searchInApi(fmt.Sprintf("relation/%d", i), data)
 			fmt.Fprint(rw, data)
 		}
 	})
