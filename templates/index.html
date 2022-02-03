@@ -5,6 +5,11 @@
     <title>Accueil</title>
 </head>
 <body>
-    <img src="{{ .Image }}" alt="">
+    {{range $}}
+    <img src="{{.Image}}" alt="">
+    <div>
+        <h1>{{.Name}}</h1>
+    </div>
+    {{end}}
 </body>
 </html>

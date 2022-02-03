@@ -40,10 +40,15 @@ func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		data := &Artist{}
-		searchInApi("artists/5", data)
-		maintemp.Execute(rw, *data)
+		listOfArtist := []Artist{}
+		for i := 0; i <= 52; i++ {
+			searchInApi(fmt.Sprintf("artists/%d", i), data)
+			listOfArtist = append(listOfArtist, *data)
+		}
+		maintemp.Execute(rw, listOfArtist)
 	})
 
+	fmt.Println("Server Open In http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
 
