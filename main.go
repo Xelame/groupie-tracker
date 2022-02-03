@@ -1,26 +1,37 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 )
+
+type Artist struct {
+	Id           int
+	Image        string
+	Name         string
+	Members      []string
+	CreationDate int
+	FirstAlbum   string
+	Locations    string
+	ConcertDates string
+	Relations    string
+}
 
 func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		for i := 0; i <= 52; i++ {
-			fmt.Fprint(rw, searchInApi(fmt.Sprintf("artists/%d", i)))
+		data := &Artist{}
+		for i := 1; i <= 52; i++ {
+			searchInApi(fmt.Sprintf("artists/%d", i), data)
+			fmt.Fprint(rw, data.Id)
 		}
 	})
 
-	// Open the server (let's go)
-	fmt.Println("Open server at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	http.ListenAndServe(":8080", nil)
 }
 
-func searchInApi(endOfUrl string) string {
+func searchInApi(endOfUrl string, target interface{}) error {
 	var url string
 	if endOfUrl == "" {
 		url = "https://groupietrackers.herokuapp.com/api"
@@ -28,17 +39,13 @@ func searchInApi(endOfUrl string) string {
 		url = fmt.Sprintf("https://groupietrackers.herokuapp.com/api/%s", endOfUrl)
 	}
 
-	json, err := http.Get(url)
+	res, err := http.Get(url)
 
-	fmt.Print(json)
 	if err != nil {
-		return err.Error()
+		return err
 	}
 
-	content, err := ioutil.ReadAll(json.Body)
-	if err != nil {
-		return err.Error()
-	}
+	defer res.Body.Close()
 
-	return string(content)
+	return json.NewDecoder(res.Body).Decode(target)
 }
