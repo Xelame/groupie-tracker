@@ -1,0 +1,9 @@
+body {
+    margin: 0;
+}
+
+.card {
+    display: block;
+    flex-wrap: nowrap;
+    max-width: 700px;
+}

@@ -26,7 +26,7 @@ type Dates struct {
 
 type Locations struct {
 	Id        int
-	Locations []string
+	Locations interface{}
 	Dates     string
 }
 
@@ -41,12 +41,13 @@ func main() {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		data := &Artist{}
-		listOfArtist := []Artist{}
+		data := &Locations{}
+		listOfArtist := []Locations{}
 		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("artists/%d", i), data)
+			searchInApi(fmt.Sprintf("locations/%d", i), data)
 			listOfArtist = append(listOfArtist, *data)
 		}
+		fmt.Println(listOfArtist)
 		maintemp.Execute(rw, listOfArtist)
 	})
 

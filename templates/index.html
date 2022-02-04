@@ -7,9 +7,13 @@
 </head>
 <body>
     {{range $}} <!-- $ = la donnée importé -->
-    <img src="{{.Image}}" alt="">
-    <div>
-        <h1>{{.Name}}</h1>
+    <div class="card">
+        <img src="{{.Image}}" alt="">
+        <div class="texte">
+            <h1>Name : {{.Name}}</h1>
+            <p>Begin at {{.CreationDate}}</p>
+            <p>First album at {{.FirstAlbum}}</p>
+        </div>
     </div>
     {{end}}
 </body>
