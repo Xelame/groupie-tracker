@@ -42,18 +42,22 @@ func main() {
 		data := &Artist{}
 		data1 := &Locations{}
 		data2 := &Relations{}
+		data3 := &Dates{}
+		listOfDates := []Dates{}
 		listOfRelations := []Relations{}
-		listOfArtist := []Artist{}
 		listOfLocations := []Locations{}
+		listOfArtist := []Artist{}
 		for i := 1; i <= 52; i++ {
 			searchInApi(fmt.Sprintf("artists/%d", i), data)
 			searchInApi(fmt.Sprintf("locations/%d", i), data1)
 			searchInApi(fmt.Sprintf("relation/%d", i), data2)
+			searchInApi(fmt.Sprintf("dates/%d", i), data3)
+			listOfDates = append(listOfDates, *data3)
 			listOfLocations = append(listOfLocations, *data1)
-			listOfArtist = append(listOfArtist, *data)
 			listOfRelations = append(listOfRelations, *data2)
+			listOfArtist = append(listOfArtist, *data)
 		}
-		fmt.Println(listOfRelations)
+		fmt.Println(listOfDates)
 		maintemp.Execute(rw, listOfLocations)
 	})
 
