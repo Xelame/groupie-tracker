@@ -7,12 +7,6 @@ import (
 	"net/http"
 )
 
-type Locations struct {
-	ID        int
-	Locations []string
-	Dates     string
-}
-
 type Artist struct {
 	Id           int
 	Image        string
@@ -25,9 +19,15 @@ type Artist struct {
 	Relations    string
 }
 
-type Dates []struct {
-	ID    int
+type Dates struct {
+	Id    int
 	Dates []string
+}
+
+type Locations struct {
+	Id        int
+	Locations interface{}
+	Dates     string
 }
 
 type Relations struct {
@@ -40,12 +40,21 @@ func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		data := &Artist{}
+		data1 := &Locations{}
+		data2 := &Relations{}
+		listOfRelations := []Relations{}
 		listOfArtist := []Artist{}
-		for i := 0; i <= 52; i++ {
+		listOfLocations := []Locations{}
+		for i := 1; i <= 52; i++ {
 			searchInApi(fmt.Sprintf("artists/%d", i), data)
+			searchInApi(fmt.Sprintf("locations/%d", i), data1)
+			searchInApi(fmt.Sprintf("relation/%d", i), data2)
+			listOfLocations = append(listOfLocations, *data1)
 			listOfArtist = append(listOfArtist, *data)
+			listOfRelations = append(listOfRelations, *data2)
 		}
-		maintemp.Execute(rw, listOfArtist)
+		fmt.Println(listOfRelations)
+		maintemp.Execute(rw, listOfLocations)
 	})
 
 	fmt.Println("Server Open In http://localhost:8080")
