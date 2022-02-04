@@ -19,12 +19,12 @@ type Artist struct {
 	Relations    string
 }
 
-type Dates []struct {
+type Dates struct {
 	Id    int
 	Dates []string
 }
 
-type Locations []struct {
+type Locations struct {
 	Id        int
 	Locations []string
 	Dates     string
@@ -37,11 +37,13 @@ type Relations struct {
 
 func main() {
 	maintemp := OpenTemplate("index")
+
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		data := &Artist{}
 		listOfArtist := []Artist{}
-		for i := 0; i <= 52; i++ {
+		for i := 1; i <= 52; i++ {
 			searchInApi(fmt.Sprintf("artists/%d", i), data)
 			listOfArtist = append(listOfArtist, *data)
 		}

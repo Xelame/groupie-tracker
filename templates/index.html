@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Accueil</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    {{range $}}
+    {{range $}} <!-- $ = la donnée importé -->
     <img src="{{.Image}}" alt="">
     <div>
         <h1>{{.Name}}</h1>
