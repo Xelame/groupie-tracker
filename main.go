@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 )
 
@@ -24,7 +25,7 @@ type Artist struct {
 	Relations    string
 }
 
-type Dates struct {
+type Dates []struct {
 	ID    int
 	Dates []string
 }
@@ -35,15 +36,19 @@ type Relations struct {
 }
 
 func main() {
+	maintemp := OpenTemplate("index")
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		data := &Relations{}
-		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("relation/%d", i), data)
-			fmt.Fprint(rw, data)
+		data := &Artist{}
+		listOfArtist := []Artist{}
+		for i := 0; i <= 52; i++ {
+			searchInApi(fmt.Sprintf("artists/%d", i), data)
+			listOfArtist = append(listOfArtist, *data)
 		}
+		maintemp.Execute(rw, listOfArtist)
 	})
 
+	fmt.Println("Server Open In http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -61,7 +66,13 @@ func searchInApi(endOfUrl string, target interface{}) error {
 		return err
 	}
 
-	defer res.Body.Close()
-
 	return json.NewDecoder(res.Body).Decode(target)
+}
+
+func OpenTemplate(fileName string) *template.Template {
+	tmpl, err := template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName))
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return tmpl
 }
