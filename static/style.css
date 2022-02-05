@@ -1,7 +1,7 @@
 body {
   color:rgb(218, 218, 218);
   background-color:rgb(59, 59, 59);
-  background-image:url(./image/7d20.gif);
+  background-image:url(./image/84248.png);
   background-repeat:no-repeat;
   background-size: cover;
   }
@@ -30,8 +30,50 @@ li a {
 
 /* Change the link color to #111 (black) on hover */
 li a:hover {
-  background-color: rgb(40, 10, 109);
+  background-color: rgb(141, 10, 21);
 }
 .active {
   background-color: #480a992f;
+}
+
+
+
+.Box {
+  padding : 1em;
+  width: 200px;
+  height: 200px;
+  box-sizing: border-box;
+
+  /* La couche la plus basse sera
+     peinte avec un gris clair uni */
+  background-color: #8c185ac9;
+
+  /* Ensuite on applique des gradients
+     linéaires les uns sur les autres
+     pour créer un effet de bandes colorées.
+     Comme vous pouvez le voir, les gradients
+     sont considérés et manipulés comme des
+     images */
+  background-image: linear-gradient(175deg, rgba(0,0,0,0) 95%, #8c1859 0),
+                    linear-gradient( 85deg, rgba(0,0,0,0) 95%, #9b1b56 10%),
+                    linear-gradient(175deg, rgba(0,0,0,0) 90%, #ad2355 20%),
+                    linear-gradient( 85deg, rgba(0,0,0,0) 92%, #c22f54 30%),
+                    linear-gradient(175deg, rgba(0,0,0,0) 85%, #d93f53 40%),
+                    linear-gradient( 85deg, rgba(0,0,0,0) 89%, #f25353 50%),
+                    linear-gradient(175deg, rgba(0,0,0,0) 80%, #ff6951 60%),
+                    linear-gradient( 85deg, rgba(0,0,0,0) 86%, #ff7e4b 70%),
+                    linear-gradient(175deg, rgba(0,0,0,0) 75%, #ff9243 80%),
+                    linear-gradient( 85deg, rgba(0,0,0,0) 83%, #ffa537 90%),
+                    linear-gradient(175deg, rgba(0,0,0,0) 70%, #ffb629 100%);
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+
 }
