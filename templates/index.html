@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    {{range $}} <!-- $ = la donnée importé -->
-    <div class="card">
-        <img src="{{.Image}}" alt="">
-        <div class="texte">
-            <h1>Name : {{.Name}}</h1>
-            <p>Begin at {{.CreationDate}}</p>
-            <p>First album at {{.FirstAlbum}}</p>
-        </div>
-    </div>
-    {{end}}
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Accueil</title>
+        <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body>
+        <form action="/index" method="post">
+            <input type="text" name="" id="">
+            <button type="submit">Rechercher</button>
+        </form>
+        {{range $}} <!-- $ = la donnée importé -->
+            {{template "card" .}}
+        {{end}}
+    </body>
 </html>

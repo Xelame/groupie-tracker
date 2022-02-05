@@ -26,7 +26,7 @@ type Dates struct {
 
 type Locations struct {
 	Id        int
-	Locations interface{}
+	Locations []string
 	Dates     string
 }
 
@@ -41,13 +41,12 @@ func main() {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		data := &Locations{}
-		listOfArtist := []Locations{}
+		data := &Artist{}
+		listOfArtist := []Artist{}
 		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("locations/%d", i), data)
+			searchInApi(fmt.Sprintf("artists/%d", i), data)
 			listOfArtist = append(listOfArtist, *data)
 		}
-		fmt.Println(listOfArtist)
 		maintemp.Execute(rw, listOfArtist)
 	})
 
@@ -73,9 +72,6 @@ func searchInApi(endOfUrl string, target interface{}) error {
 }
 
 func OpenTemplate(fileName string) *template.Template {
-	tmpl, err := template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName))
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html"))
 	return tmpl
 }

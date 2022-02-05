@@ -1,9 +1,25 @@
 body {
     margin: 0;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: #2F2F2F;
 }
 
 .card {
+    margin: auto;
     display: block;
-    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
     max-width: 700px;
+}
+
+.texte {
+    text-align: center;
+}
+
+img {
+    border-radius: 50%;
+    box-shadow: 5px 5px 5px black;
 }
