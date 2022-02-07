@@ -57,7 +57,6 @@ func main() {
 			listOfRelations = append(listOfRelations, *data2)
 			listOfArtist = append(listOfArtist, *data)
 		}
-		fmt.Println(listOfDates)
 		maintemp.Execute(rw, listOfLocations)
 	})
 

@@ -6,9 +6,11 @@
 </head>
 <body>
     {{range $}}
+    {{range .Locations}}
     <div>
-        <h1>{{.Locations}}</h1>
+        <h1>{{.}}</h1>
     </div>
+    {{end}}
     {{end}}
 </body>
 </html>
