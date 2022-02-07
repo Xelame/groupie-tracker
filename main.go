@@ -37,6 +37,8 @@ type Relations struct {
 
 func main() {
 	maintemp := OpenTemplate("index")
+
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		data := &Artist{}
@@ -82,9 +84,6 @@ func searchInApi(endOfUrl string, target interface{}) error {
 }
 
 func OpenTemplate(fileName string) *template.Template {
-	tmpl, err := template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName))
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html"))
 	return tmpl
 }
