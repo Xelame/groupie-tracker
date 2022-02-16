@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
 type Artist struct {
@@ -41,11 +42,14 @@ func main() {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		path := GetUrl(r)
 		data := &Artist{}
 		listOfArtist := []Artist{}
 		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("artists/%d", i), data)
-			listOfArtist = append(listOfArtist, *data)
+			if path[0] == fmt.Sprintf("%d", i) {
+				searchInApi(fmt.Sprintf("artists/%d", i), data)
+				listOfArtist = append(listOfArtist, *data)
+			}
 		}
 		maintemp.Execute(rw, listOfArtist)
 	})
@@ -74,4 +78,9 @@ func searchInApi(endOfUrl string, target interface{}) error {
 func OpenTemplate(fileName string) *template.Template {
 	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html"))
 	return tmpl
+}
+
+func GetUrl(r *http.Request) []string {
+	path := strings.Split(r.URL.Path[1:], "/")
+	return path
 }
