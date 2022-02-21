@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
 type Artist struct {
@@ -37,10 +38,11 @@ type Relations struct {
 
 func main() {
 	maintemp := OpenTemplate("index")
-
+	var url []string
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		url = GetUrl(r)
 		data := &Artist{}
 		listOfArtist := []Artist{}
 		for i := 1; i <= 52; i++ {
@@ -48,8 +50,8 @@ func main() {
 			listOfArtist = append(listOfArtist, *data)
 		}
 		maintemp.Execute(rw, listOfArtist)
+		fmt.Println(url)
 	})
-
 	fmt.Println("Server Open In http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
@@ -63,12 +65,16 @@ func searchInApi(endOfUrl string, target interface{}) error {
 	}
 
 	res, err := http.Get(url)
-
 	if err != nil {
 		return err
 	}
 
 	return json.NewDecoder(res.Body).Decode(target)
+}
+
+func GetUrl(r *http.Request) []string {
+	path := strings.Split(r.URL.Path[1:], "/")
+	return path
 }
 
 func OpenTemplate(fileName string) *template.Template {
