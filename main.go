@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -43,14 +44,22 @@ func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		url = GetUrl(r)
-		data := &Artist{}
-		listOfArtist := []Artist{}
-		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("artists/%d", i), data)
-			listOfArtist = append(listOfArtist, *data)
+		if len(url) > 1 {
+			data := &Artist{}
+			Artists := []Artist{}
+			intUrl, _ := strconv.Atoi(url[1])
+			searchInApi(fmt.Sprintf("artists/%d", intUrl), data)
+			Artists = append(Artists, *data)
+			maintemp.Execute(rw, Artists)
+		} else {
+			listOfArtist := []Artist{}
+			data := &Artist{}
+			for i := 1; i <= 52; i++ {
+				searchInApi(fmt.Sprintf("artists/%d", i), data)
+				listOfArtist = append(listOfArtist, *data)
+			}
+			maintemp.Execute(rw, listOfArtist)
 		}
-		maintemp.Execute(rw, listOfArtist)
-		fmt.Println(url)
 	})
 	fmt.Println("Server Open In http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
