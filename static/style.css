@@ -1,3 +1,15 @@
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+
+
+@font-face {
+  font-family: Shockwave;
+  src: local("Helvetica Neue Bold"),
+       local("HelveticaNeue-Bold"),
+       url(./font/shockwave/Shockwave.ttf);
+  font-weight: bold;
+}
+
+ 
 body {
   color:rgb(218, 218, 218);
   background-color:rgb(59, 59, 59);
@@ -37,41 +49,103 @@ li a:hover {
 }
 
 
+.spinner{
+  height: 36px;
+  width: 36px;
+  background-color: #ffffff;
+  animation: flip 1s linear infinite;
+}
+@keyframes flip {
+  50%{
+    transform: rotateX(180deg);
+  }
+  100%{
+    transform: rotateX(180deg) rotateY(180deg);
+  }
+  
+}
 
-.Box {
-  padding : 1em;
-  width: 200px;
-  height: 200px;
+*{
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
 
-  /* La couche la plus basse sera
-     peinte avec un gris clair uni */
-  background-color: #8c185a3a;
+body{
+  font-family: "Shockwave", serif;
+}
 
-  /* Ensuite on applique des gradients
-     linéaires les uns sur les autres
-     pour créer un effet de bandes colorées.
-     Comme vous pouvez le voir, les gradients
-     sont considérés et manipulés comme des
-     images */
-  background-image: linear-gradient(175deg, rgba(0,0,0,0) 95%, #4e4371 0),
-                    linear-gradient( 85deg, rgba(0,0,0,0) 95%, #65517b 11%),
-                    linear-gradient(175deg, rgba(0,0,0,0) 90%, #775b84 22%),
-                    linear-gradient( 85deg, rgba(0,0,0,0) 92%, #90698d 33%),
-                    linear-gradient(175deg, rgba(0,0,0,0) 85%, #ab6884 44%),
-                    linear-gradient( 85deg, rgba(0,0,0,0) 89%, #b76880 55%),
-                    linear-gradient(175deg, rgba(0,0,0,0) 80%, #c76472 66%),
-                    linear-gradient( 85deg, rgba(0,0,0,0) 83%, #cf686f 77%),
-                    linear-gradient(175deg, rgba(0,0,0,0) 70%, #f87e61 100%);
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+.wrapper{
+  display: flex;
+  justify-content: center;
+  align-content: 0;
+  margin-top: 30px;
+}
 
+.wrapper .icon{
+  position: relative;
+  border-radius: 50%;
+  padding: 15px;
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.wrapper .icon{
+  color: #fff;
+  transition: .4s linear;
+}
+
+.wrapper .icon::before,
+.wrapper .icon::after{
+  content: '';
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  transition: .4s linear;
+}
+
+.wrapper .icon:hover::before{
+  border-radius: 50%;
+  border-left: 4px solid;
+  border-right: 4px solid;
+  transform: skewX(20deg);
+  color: #fff;
+}
+
+.wrapper .icon:hover::after{
+  border-radius: 50%;
+  border-left: 4px solid;
+  border-right: 4px solid;
+  transform: skewY(-20deg);
+  color: #fff;
+}
+
+.wrapper .tooltip{
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  color: #ffffff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.wrapper .icon:hover .tooltip{
+  top: -45px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
