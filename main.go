@@ -85,19 +85,41 @@ func GetUrl(r *http.Request) []string {
 }
 
 func GetWiki(target Artist) {
+	url := ""
 	switch target.Name {
+	case "Green Day":
+		target.Name = "<span class=\"lang-en\" lang=\"en\">Green Day</span>"
+		url = "https://fr.wikipedia.org/wiki/Green_Day"
+	case "Alec Benjamin":
+		target.Name = "Alec Shane Benjamin"
+		url = "https://fr.wikipedia.org/wiki/Alec_Benjamin"
+	case "Bee Gees":
+		target.Name = "The Bee Gees"
+		url = "https://fr.wikipedia.org/wiki/Bee_Gees"
+	case "ACDC":
+		target.Name = "AC/DC"
+		url = "https://fr.wikipedia.org/wiki/AC/DC"
 	case "SOJA":
 		target.Name = "Soldiers of Jah Army"
+		url = "https://fr.wikipedia.org/wiki/Soldiers_of_Jah_Army"
 	case "Bobby McFerrins":
 		target.Name = "Bobby McFerrin"
+		url = "https://fr.wikipedia.org/wiki/Bobby_McFerrin"
 	case "R3HAB":
 		target.Name = "R3hab"
+		url = "https://fr.wikipedia.org/wiki/R3hab"
 	case "Genesis":
-		target.Name = "Genesis (groupe)"
+		url = "https://fr.wikipedia.org/wiki/Genesis_(groupe)"
+	case "Muse":
+		url = "https://fr.wikipedia.org/wiki/Muse_(groupe)"
+	case "NWA":
+		url = "https://fr.wikipedia.org/wiki/NWA_(groupe)"
+	default:
+		url = fmt.Sprintf("https://fr.wikipedia.org/wiki/%s", target.Name)
+		url = strings.ReplaceAll(url, " ", "_")
 	}
 
-	url := fmt.Sprintf("https://fr.wikipedia.org/wiki/%s", target.Name)
-	url = strings.ReplaceAll(url, " ", "_")
+	fmt.Println(url)
 	res, err := http.Get(url)
 
 	if err != nil {
@@ -111,52 +133,19 @@ func GetWiki(target Artist) {
 
 	if res.StatusCode == 200 {
 		pageContent := string(contentBytes)
-		begin := strings.Index(pageContent, "<b>")
+		begin := strings.Index(pageContent, fmt.Sprintf("<b>%s</b>", target.Name))
 		if begin == -1 {
 			fmt.Println("Aie")
 		}
-		begin += len("<b>")
 
-		end := strings.Index(string(pageContent[begin:]), "</p>")
-		if end == -1 {
-			fmt.Println("Aie")
-		}
-		end += begin
+		regex := regexp.MustCompile(`<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">|<h2>`)
+		end := regex.FindStringIndex(string(pageContent[begin:]))
+		end[0] += begin
+		description := string([]byte(pageContent[begin:end[0]]))
 
-		description := string([]byte(pageContent[begin:end]))
-		regex1 := regexp.MustCompile(`<(\"[^\"]*\"|'[^']*'|[^'\">])*>`)
-		test := regex1.FindAllString(description, 1000)
-		for _, v := range test {
-			if len(v) >= 6 {
-				if v[:6] == "<style" {
-					regex2 := regexp.MustCompile(fmt.Sprintf(`%s(.*?)%s`, v, fmt.Sprintf("</%s>", v[1:6])))
-					test2 := regex2.FindAllString(description, 1000)
-					for _, w := range test2 {
-						description = strings.Replace(description, w, "", 1)
-					}
-				}
-			}
-			if len(v) >= 5 {
-				if v[:5] == "<span" {
-					regex2 := regexp.MustCompile(`<span .*?(<span .*?</span>.*?</span>|.*?</span>)`)
-					test2 := regex2.FindAllString(description, 1000)
-					for _, w := range test2 {
-						description = strings.Replace(description, w, "", 1)
-					}
-				}
-			}
-			if len(v) > 3 {
-				if v[:4] == "<sup" {
-					regex2 := regexp.MustCompile(fmt.Sprintf(`%s(.*?)%s`, v, fmt.Sprintf("</%s>", v[1:4])))
-					test2 := regex2.FindAllString(description, 1000)
-					for _, w := range test2 {
-						description = strings.Replace(description, w, "", 1)
-					}
-				}
-			}
-			description = strings.Replace(description, v, "", 1)
-		}
-		// fmt.Println(description)
+		description = RegexTag(description)
+
+		fmt.Println(description)
 	}
 }
 
@@ -170,6 +159,24 @@ func GetTagName(tag string) string {
 	return tag[1:end]
 }
 
-func DetectBadTag(tag string) {
-	
+func RegexTag(content string) string {
+	regex := regexp.MustCompile(`<(\"[^\"]*\"|'[^']*'|[^'\">])*>`)
+	tags := regex.FindAllString(content, 1000)
+	for len(tags) > 0 {
+		tag := tags[0]
+		if (GetTagName(tag) == "span" && !(tag == "<span class=\"lang-en\" lang=\"en\">" || tag == "<span class=\"nowrap\">")) || GetTagName(tag) == "style" || GetTagName(tag) == "sup" || GetTagName(tag) == "small" {
+			for i := 1; i < len(tag) && "/"+GetTagName(tag) != GetTagName(tags[i]); i++ {
+				if GetTagName(tag) == GetTagName(tags[i]) {
+					tag = tags[i]
+				}
+			}
+			begin := strings.Index(content, tag)
+			end := strings.Index(content, fmt.Sprintf("</%s>", GetTagName(tag))) + len(fmt.Sprintf("</%s>", GetTagName(tag)))
+			content = strings.Replace(content, content[begin:end], "", 1)
+		} else {
+			content = strings.Replace(content, tag, "", 1)
+		}
+		tags = regex.FindAllString(content, 1000)
+	}
+	return strings.ReplaceAll(content, "&#160;", "")
 }
