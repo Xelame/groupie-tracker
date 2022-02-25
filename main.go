@@ -84,6 +84,8 @@ func GetUrl(r *http.Request) []string {
 	return path
 }
 
+// GET DESCRIPTION PART _______________________________________________________________________________________________________________
+
 func GetWiki(target Artist) {
 	url := ""
 	switch target.Name {
@@ -180,3 +182,5 @@ func RegexTag(content string) string {
 	}
 	return strings.ReplaceAll(content, "&#160;", "")
 }
+
+//______________________________________________________________________________________________________________________________
