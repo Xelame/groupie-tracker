@@ -46,7 +46,6 @@ func main() {
 	maintemp := OpenTemplate("index")
 	var url []string
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
-	data := &Artist{}
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		url = GetUrl(r)
