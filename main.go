@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -42,18 +43,30 @@ type Relations struct {
 }
 
 func main() {
-
+	maintemp := OpenTemplate("index")
+	var url []string
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	data := &Artist{}
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		for i := 1; i <= 1; i++ {
-			searchInApi(fmt.Sprintf("artists/%d", i), data)
-			data.Description = GetWiki(*data)
+		url = GetUrl(r)
+		if len(url) > 1 {
+			data := &Artist{}
+			Artists := []Artist{}
+			intUrl, _ := strconv.Atoi(url[1])
+			searchInApi(fmt.Sprintf("artists/%d", intUrl), data)
+			Artists = append(Artists, *data)
+			maintemp.Execute(rw, Artists)
+		} else {
+			listOfArtist := []Artist{}
+			data := &Artist{}
+			for i := 1; i <= 52; i++ {
+				searchInApi(fmt.Sprintf("artists/%d", i), data)
+				listOfArtist = append(listOfArtist, *data)
+			}
+			maintemp.Execute(rw, listOfArtist)
 		}
-		fmt.Println(data.Description)
 	})
-
 	fmt.Println("Server Open In http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
@@ -67,12 +80,16 @@ func searchInApi(endOfUrl string, target interface{}) error {
 	}
 
 	res, err := http.Get(url)
-
 	if err != nil {
 		return err
 	}
 
 	return json.NewDecoder(res.Body).Decode(target)
+}
+
+func GetUrl(r *http.Request) []string {
+	path := strings.Split(r.URL.Path[1:], "/")
+	return path
 }
 
 func OpenTemplate(fileName string) *template.Template {
@@ -87,7 +104,7 @@ func GetUrl(r *http.Request) []string {
 
 // GET DESCRIPTION PART _______________________________________________________________________________________________________________
 
-func GetWiki(target Artist) string {
+func GetWiki(target Artist) {
 	url := ""
 	switch target.Name {
 	case "Green Day":
@@ -148,9 +165,7 @@ func GetWiki(target Artist) string {
 
 		description = RegexTag(description)
 
-		return description
-	} else {
-		return ""
+		target.Description = description
 	}
 }
 
