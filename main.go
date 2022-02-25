@@ -97,11 +97,6 @@ func OpenTemplate(fileName string) *template.Template {
 	return tmpl
 }
 
-func GetUrl(r *http.Request) []string {
-	path := strings.Split(r.URL.Path[1:], "/")
-	return path
-}
-
 // GET DESCRIPTION PART _______________________________________________________________________________________________________________
 
 func GetWiki(target Artist) {
