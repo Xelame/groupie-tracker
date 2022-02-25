@@ -22,6 +22,7 @@ type Artist struct {
 	Locations    string
 	ConcertDates string
 	Relations    string
+	Description  string
 }
 
 type Dates struct {
@@ -44,13 +45,13 @@ func main() {
 
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
 	data := &Artist{}
-	for i := 1; i <= 52; i++ {
-		searchInApi(fmt.Sprintf("artists/%d", i), data)
-		GetWiki(*data)
-	}
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		PATH = GetUrl(r)
+		for i := 1; i <= 1; i++ {
+			searchInApi(fmt.Sprintf("artists/%d", i), data)
+			data.Description = GetWiki(*data)
+		}
+		fmt.Println(data.Description)
 	})
 
 	fmt.Println("Server Open In http://localhost:8080")
@@ -86,7 +87,7 @@ func GetUrl(r *http.Request) []string {
 
 // GET DESCRIPTION PART _______________________________________________________________________________________________________________
 
-func GetWiki(target Artist) {
+func GetWiki(target Artist) string {
 	url := ""
 	switch target.Name {
 	case "Green Day":
@@ -147,7 +148,9 @@ func GetWiki(target Artist) {
 
 		description = RegexTag(description)
 
-		fmt.Println(description)
+		return description
+	} else {
+		return ""
 	}
 }
 
