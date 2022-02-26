@@ -44,19 +44,36 @@ func main() {
 	// Apply a function in this page (don't worry i diplay every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		url = GetUrl(r)
+		listOfArtist := []Artist{}
+		data1 := &Artist{}
+		for i := 1; i <= 52; i++ {
+			searchInApi(fmt.Sprintf("artists/%d", i), data1)
+			listOfArtist = append(listOfArtist, *data1)
+		}
 		if len(url) > 1 {
-			data := &Artist{}
 			Artists := []Artist{}
+			if r.Method == "POST" {
+				for i := 0; i <= 51; i++ {
+					if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
+						list := []Artist{listOfArtist[i]}
+						Artists = list
+						break
+					}
+				}
+			}
+			data := &Artist{}
 			intUrl, _ := strconv.Atoi(url[1])
 			searchInApi(fmt.Sprintf("artists/%d", intUrl), data)
 			Artists = append(Artists, *data)
 			maintemp.Execute(rw, Artists)
 		} else {
-			listOfArtist := []Artist{}
-			data := &Artist{}
-			for i := 1; i <= 52; i++ {
-				searchInApi(fmt.Sprintf("artists/%d", i), data)
-				listOfArtist = append(listOfArtist, *data)
+			for i := 0; i <= 51; i++ {
+
+				if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
+					list := []Artist{listOfArtist[i]}
+					listOfArtist = list
+					break
+				}
 			}
 			maintemp.Execute(rw, listOfArtist)
 		}
