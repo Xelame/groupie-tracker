@@ -55,15 +55,19 @@ func main() {
 			searchInApi(fmt.Sprintf("artists/%d", i), data1)
 			listOfArtist = append(listOfArtist, *data1)
 		}
+		list1 := listOfArtist
 		if len(url) > 1 {
 			Artists := []Artist{}
 			if r.Method == "POST" {
+				list := []Artist{}
 				for i := 0; i <= 51; i++ {
-					if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
-						list := []Artist{listOfArtist[i]}
+					if strings.Contains(strings.ToUpper(list1[i].Name), strings.ToUpper(r.FormValue("artists"))) {
+						list = append(list, list1[i])
 						Artists = list
-						break
+						fmt.Println("list:", list)
 					}
+					fmt.Println("listOfArtist:", listOfArtist)
+
 				}
 			}
 			data := &Artist{}
@@ -72,12 +76,15 @@ func main() {
 			Artists = append(Artists, *data)
 			maintemp.Execute(rw, Artists)
 		} else {
-			for i := 0; i <= 51; i++ {
-
-				if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
-					list := []Artist{listOfArtist[i]}
-					listOfArtist = list
-					break
+			if r.Method == "POST" {
+				list := []Artist{}
+				for i := 0; i <= 51; i++ {
+					if strings.Contains(strings.ToUpper(list1[i].Name), strings.ToUpper(r.FormValue("artists"))) {
+						list = append(list, list1[i])
+						listOfArtist = list
+						fmt.Println("list:", list)
+					}
+					fmt.Println("listOfArtist:", listOfArtist)
 				}
 			}
 			maintemp.Execute(rw, listOfArtist)
