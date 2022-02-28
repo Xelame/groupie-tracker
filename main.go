@@ -49,8 +49,14 @@ func main() {
 	// Apply a function in this page (don't worry i display every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		PATH = GetUrl(r)
+		fmt.Println(PATH)
+		if PATH[0] == "artists" {
+			ArtistHandler(rw, r)
+			if len(PATH) > 1 && PATH[1] != "" {
+
+			}
+		}
 	})
-	http.HandleFunc("/artists/", ArtistHandler)
 	fmt.Println("Server Open In http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
@@ -187,7 +193,6 @@ func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
 	searchInApi("artists", listOfArtist)
 	if len(PATH) > 1 && PATH[1] != "" {
 		searchInApi("artists", listOfArtist)
-	} else if len(PATH) > 1 && PATH[1] == "" {
 	}
 	data1 := &Artist{}
 	for i := 1; i <= 52; i++ {

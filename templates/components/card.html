@@ -1,8 +1,10 @@
 {{define "card"}}
-    <div class="card">
-        <img src="{{.Image}}" alt="">
-        <div class="texte">
-            <p>Name : {{.Name}} <br> Started in {{.CreationDate}} <br> First album in {{.FirstAlbum}}</p>
+    <a href="/artists/{{.Id}}">
+        <div class="card">
+            <img src="{{.Image}}" alt="">
+            <div class="texte">
+                <p>Name : {{.Name}} <br> Started in {{.CreationDate}} <br> First album in {{.FirstAlbum}}</p>
+            </div>
         </div>
-    </div>
+    </a>
 {{end}}
