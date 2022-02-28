@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -42,52 +41,16 @@ type Relations struct {
 	DatesLocations interface{}
 }
 
-func main() {
-	maintemp := OpenTemplate("index")
-	var url []string
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
-	// Apply a function in this page (don't worry i diplay every time a html template ^^)
-	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		url = GetUrl(r)
-		listOfArtist := []Artist{}
-		data1 := &Artist{}
-		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("artists/%d", i), data1)
-			listOfArtist = append(listOfArtist, *data1)
-		}
-		list1 := listOfArtist
-		if len(url) > 1 {
-			Artists := []Artist{}
-			if r.Method == "POST" {
-				list := []Artist{}
-				for i := 0; i <= 51; i++ {
-					if strings.Contains(strings.ToUpper(list1[i].Name), strings.ToUpper(r.FormValue("artists"))) {
-						list = append(list, list1[i])
-						Artists = list
-						fmt.Println("list:", list)
-					}
-					fmt.Println("listOfArtist:", listOfArtist)
+var Maintemp = OpenTemplate("index")
 
-				}
-			}
-			data := &Artist{}
-			intUrl, _ := strconv.Atoi(url[1])
-			searchInApi(fmt.Sprintf("artists/%d", intUrl), data)
-			Artists = append(Artists, *data)
-			maintemp.Execute(rw, Artists)
-		} else {
-			if r.Method == "POST" {
-				list := []Artist{}
-				for i := 0; i <= 51; i++ {
-					if strings.Contains(strings.ToUpper(list1[i].Name), strings.ToUpper(r.FormValue("artists"))) {
-						list = append(list, list1[i])
-						listOfArtist = list
-						fmt.Println("list:", list)
-					}
-					fmt.Println("listOfArtist:", listOfArtist)
-				}
-			}
-			maintemp.Execute(rw, listOfArtist)
+func main() {
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
+	// Apply a function in this page (don't worry i display every time a html template ^^)
+	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		PATH = GetUrl(r)
+		fmt.Println(PATH)
+		if PATH[0] == "artists" {
+			ArtistHandler(rw, r)
 		}
 	})
 	fmt.Println("Server Open In http://localhost:8080")
@@ -220,3 +183,24 @@ func RegexTag(content string) string {
 }
 
 //______________________________________________________________________________________________________________________________
+
+func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
+	listOfArtist := &[]Artist{}
+	if len(PATH) == 1 {
+		searchInApi("artists", listOfArtist)
+		if r.Method == "POST" {
+			list := &[]Artist{}
+			for i := 0; i <= 51; i++ {
+				if strings.Contains(strings.ToUpper((*listOfArtist)[i].Name), strings.ToUpper(r.FormValue("artists"))) {
+					*list = append(*list, (*listOfArtist)[i])
+				}
+			}
+			listOfArtist = list
+		}
+	} else if len(PATH) > 1 && PATH[1] != "" {
+		artist := &Artist{}
+		searchInApi(fmt.Sprintf("artists/%s", PATH[1]), artist)
+		listOfArtist = &[]Artist{*artist}
+	}
+	Maintemp.Execute(rw, listOfArtist)
+}
