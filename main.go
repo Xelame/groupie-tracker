@@ -42,47 +42,15 @@ type Relations struct {
 	DatesLocations interface{}
 }
 
-func main() {
-	maintemp := OpenTemplate("index")
-	var url []string
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
-	// Apply a function in this page (don't worry i diplay every time a html template ^^)
-	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		url = GetUrl(r)
-		listOfArtist := []Artist{}
-		data1 := &Artist{}
-		for i := 1; i <= 52; i++ {
-			searchInApi(fmt.Sprintf("artists/%d", i), data1)
-			listOfArtist = append(listOfArtist, *data1)
-		}
-		if len(url) > 1 {
-			Artists := []Artist{}
-			if r.Method == "POST" {
-				for i := 0; i <= 51; i++ {
-					if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
-						list := []Artist{listOfArtist[i]}
-						Artists = list
-						break
-					}
-				}
-			}
-			data := &Artist{}
-			intUrl, _ := strconv.Atoi(url[1])
-			searchInApi(fmt.Sprintf("artists/%d", intUrl), data)
-			Artists = append(Artists, *data)
-			maintemp.Execute(rw, Artists)
-		} else {
-			for i := 0; i <= 51; i++ {
+var Maintemp = OpenTemplate("index")
 
-				if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
-					list := []Artist{listOfArtist[i]}
-					listOfArtist = list
-					break
-				}
-			}
-			maintemp.Execute(rw, listOfArtist)
-		}
+func main() {
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
+	// Apply a function in this page (don't worry i display every time a html template ^^)
+	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		PATH = GetUrl(r)
 	})
+	http.HandleFunc("/artists/", ArtistHandler)
 	fmt.Println("Server Open In http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
@@ -213,3 +181,44 @@ func RegexTag(content string) string {
 }
 
 //______________________________________________________________________________________________________________________________
+
+func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
+	listOfArtist := []Artist{}
+	searchInApi("artists", listOfArtist)
+	if len(PATH) > 1 && PATH[1] != "" {
+		searchInApi("artists", listOfArtist)
+	} else if len(PATH) > 1 && PATH[1] == "" {
+	}
+	data1 := &Artist{}
+	for i := 1; i <= 52; i++ {
+		searchInApi(fmt.Sprintf("artists/%d", i), data1)
+		listOfArtist = append(listOfArtist, *data1)
+	}
+	if len(PATH) > 1 {
+		Artists := []Artist{}
+		if r.Method == "POST" {
+			for i := 0; i <= 52; i++ {
+				if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
+					list := []Artist{listOfArtist[i]}
+					Artists = list
+					break
+				}
+			}
+		}
+		data := &Artist{}
+		intUrl, _ := strconv.Atoi(PATH[1])
+		searchInApi(fmt.Sprintf("artists/%d", intUrl), data)
+		Artists = append(Artists, *data)
+		Maintemp.Execute(rw, Artists)
+	} else {
+		for i := 0; i <= 51; i++ {
+			if strings.ToUpper(r.FormValue("artists")) == strings.ToUpper(listOfArtist[i].Name) {
+				list := []Artist{listOfArtist[i]}
+				listOfArtist = list
+				break
+			}
+		}
+		Maintemp.Execute(rw, listOfArtist)
+	}
+	Maintemp.Execute(rw, listOfArtist)
+}
