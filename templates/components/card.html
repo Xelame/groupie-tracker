@@ -1,10 +1,10 @@
 {{define "card"}}
-    <a href="/artists/{{.Id}}">
-        <div class="card">
-            <img src="{{.Image}}" alt="">
-            <div class="texte">
-                <p>Name : {{.Name}} <br> Started in {{.CreationDate}} <br> First album in {{.FirstAlbum}}</p>
-            </div>
-        </div>
-    </a>
+<a href="/artists/{{.Id}}">
+  <div class="card">
+      <div class="card_image"> <img src="{{.Image}}" /> </div>
+      <div class="card_title">
+        <p>{{.Name}}</p>
+      </div>
+    </div>
+</a>
 {{end}}

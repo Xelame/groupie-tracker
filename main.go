@@ -79,7 +79,7 @@ func GetUrl(r *http.Request) []string {
 }
 
 func OpenTemplate(fileName string) *template.Template {
-	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html"))
+	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html", "./templates/components/navbar.html"))
 	return tmpl
 }
 
