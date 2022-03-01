@@ -85,7 +85,9 @@ func main() {
 			maintemp.Execute(rw, listOfArtist)
 		}
 	})
+	http.HandleFunc("/locations", GetLocations)
 	fmt.Println("Server Open In http://localhost:8080")
+
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -113,4 +115,14 @@ func GetUrl(r *http.Request) []string {
 func OpenTemplate(fileName string) *template.Template {
 	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html"))
 	return tmpl
+}
+
+func GetLocations(rw http.ResponseWriter, r *http.Request) {
+	listOfLocations := []Locations{}
+	data1 := &Locations{}
+	for i := 1; i <= 2; i++ {
+		searchInApi(fmt.Sprintf("locations/%d", i), data1)
+		listOfLocations = append(listOfLocations, *data1)
+	}
+	fmt.Println(listOfLocations)
 }

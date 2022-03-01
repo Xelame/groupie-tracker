@@ -2,12 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Accueil</title>
-        <link rel="stylesheet" href="/css/style.css">
+        <title>Locations</title>
     </head>
     <body>
-        <form action="/" method="post">
-            <input type="text" name="artists">
+        <form action="/locations" method="post">
+            <input type="text" name="locations">
             <button type="submit">Rechercher</button>
         </form>
         <!-- $ = la donnée importé -->
@@ -18,7 +17,7 @@
         width="450"
         height="250"
         frameborder="0" style="border:0"
-        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=playa+del+carmen,mexico" allowfullscreen>
+        src="{{.}}" allowfullscreen>
        </iframe>
     </body>
 </html>
