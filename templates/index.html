@@ -6,19 +6,13 @@
         <link rel="stylesheet" href="/css/style.css">
     </head>
     <body>
-        <form action="/" method="post">
+        <form action="/artists" method="post">
             <input type="text" name="artists">
             <button type="submit">Rechercher</button>
         </form>
         <!-- $ = la donnée importé -->
         {{range $}} <!-- $ = la donnée importé -->
           {{template "card" .}}
-        {{end}}    
-        <iframe
-        width="450"
-        height="250"
-        frameborder="0" style="border:0"
-        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=playa+del+carmen,mexico" allowfullscreen>
-       </iframe>
+        {{end}}   
     </body>
 </html>
