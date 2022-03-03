@@ -41,6 +41,11 @@ type Relations struct {
 	DatesLocations interface{}
 }
 
+type Data struct {
+	ListOfArtists []Artist
+	PageNumber    []int
+}
+
 var Maintemp = OpenTemplate("index")
 
 func main() {
@@ -48,7 +53,6 @@ func main() {
 	// Apply a function in this page (don't worry i display every time a html template ^^)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		PATH = GetUrl(r)
-		fmt.Println(PATH)
 		if PATH[0] == "artists" {
 			ArtistHandler(rw, r)
 		}
@@ -57,6 +61,7 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
+// target = pointer of our interface so &target
 func searchInApi(endOfUrl string, target interface{}) error {
 	var url string
 	if endOfUrl == "" {
@@ -70,7 +75,7 @@ func searchInApi(endOfUrl string, target interface{}) error {
 		return err
 	}
 
-	return json.NewDecoder(res.Body).Decode(target)
+	return json.NewDecoder(res.Body).Decode(&target)
 }
 
 func GetUrl(r *http.Request) []string {
@@ -185,22 +190,28 @@ func RegexTag(content string) string {
 //______________________________________________________________________________________________________________________________
 
 func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
-	listOfArtist := &[]Artist{}
+	var listOfArtist []Artist
+	page := []int{}
 	if len(PATH) == 1 {
-		searchInApi("artists", listOfArtist)
+		searchInApi("artists", &listOfArtist)
 		if r.Method == "POST" {
-			list := &[]Artist{}
-			for i := 0; i <= 51; i++ {
-				if strings.Contains(strings.ToUpper((*listOfArtist)[i].Name), strings.ToUpper(r.FormValue("artists"))) {
-					*list = append(*list, (*listOfArtist)[i])
+			var list []Artist
+			for i := 0; i <= 52; i++ {
+				if strings.Contains(strings.ToUpper(listOfArtist[i].Name), strings.ToUpper(r.FormValue("artists"))) {
+					list = append(list, listOfArtist[i])
 				}
 			}
 			listOfArtist = list
 		}
-	} else if len(PATH) > 1 && PATH[1] != "" {
-		artist := &Artist{}
-		searchInApi(fmt.Sprintf("artists/%s", PATH[1]), artist)
-		listOfArtist = &[]Artist{*artist}
 	}
-	Maintemp.Execute(rw, listOfArtist)
+	for i := 1; i <= len(listOfArtist)/12; i++ {
+		page = append(page, i)
+	}
+	if len(PATH) > 1 && PATH[1] != "" {
+		var artist Artist
+		searchInApi(fmt.Sprintf("artists/%s", PATH[1]), &artist)
+		listOfArtist = []Artist{artist}
+		page = []int{}
+	}
+	Maintemp.Execute(rw, Data{listOfArtist, page})
 }
