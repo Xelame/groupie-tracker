@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -50,6 +49,7 @@ type Data struct {
 var Maintemp = OpenTemplate("index")
 var ArtistTemp = OpenTemplate("artist")
 var FormRoute = []string{"pages"}
+var ListOfArtist []Artist
 
 func main() {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
@@ -58,10 +58,6 @@ func main() {
 		PATH = GetUrl(r)
 		if PATH[0] == "artists" {
 			if len(PATH) > 1 {
-				_, err := strconv.Atoi(PATH[1])
-				if err != nil {
-
-				}
 				ArtistHandler(rw, r)
 			} else {
 				AllArtistsHandler(rw, r)
@@ -78,7 +74,7 @@ func searchInApi(endOfUrl string, target interface{}) error {
 	if endOfUrl == "" {
 		url = "https://groupietrackers.herokuapp.com/api"
 	} else {
-		url = fmt.Sprintf("https://groupietrackers.herokuapp.com/api/%s", endOfUrl)
+		url = "https://groupietrackers.herokuapp.com/api/" + endOfUrl
 	}
 
 	res, err := http.Get(url)
@@ -131,7 +127,7 @@ func GetWiki(target *Artist) {
 	case "NWA":
 		url = "https://fr.wikipedia.org/wiki/NWA_(groupe)"
 	default:
-		url = fmt.Sprintf("https://fr.wikipedia.org/wiki/%s", target.Name)
+		url = "https://fr.wikipedia.org/wiki/" + target.Name
 		url = strings.ReplaceAll(url, " ", "_")
 	}
 
@@ -199,25 +195,42 @@ func RegexTag(content string) string {
 //______________________________________________________________________________________________________________________________
 
 func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Query()["name"])
-	var listOfArtist []Artist
+	isPaginated := false
 	page := []int{}
-	if len(PATH) == 1 {
-		searchInApi("artists", &listOfArtist)
-		if r.Method == "POST" {
-			var list []Artist
-			for i := 0; i <= 52; i++ {
-				if strings.Contains(strings.ToUpper(listOfArtist[i].Name), strings.ToUpper(r.FormValue("artists"))) {
-					list = append(list, listOfArtist[i])
-				}
-			}
-			listOfArtist = list
-		}
+	listmp := []Artist{}
+
+	if len(r.URL.Query()["page"]) == 0 {
+		searchInApi("artists", &ListOfArtist)
 	}
-	for i := 1; i <= len(listOfArtist)/12; i++ {
+
+	if r.Method == "POST" {
+		for i := 0; i < len(ListOfArtist); i++ {
+			if strings.Contains(strings.ToUpper(ListOfArtist[i].Name), strings.ToUpper(r.FormValue("artists"))) {
+				listmp = append(listmp, ListOfArtist[i])
+			}
+		}
+		ListOfArtist = listmp
+	}
+
+	for i := 1; i <= len(ListOfArtist)/12+1; i++ {
+		if len(r.URL.Query()["page"]) > 0 && fmt.Sprintf("%d", i) == r.URL.Query()["page"][0] {
+			isPaginated = true
+			if i*12 > len(ListOfArtist) {
+				listmp = ListOfArtist[12*(i-1):]
+			} else {
+				listmp = ListOfArtist[12*(i-1) : 12*i]
+			}
+		}
 		page = append(page, i)
 	}
-	Maintemp.Execute(w, Data{listOfArtist, page})
+	
+	if !isPaginated && len(ListOfArtist) > 12 {
+		ListOfArtist = ListOfArtist[:12]
+	} else {
+		ListOfArtist = listmp
+	}
+
+	Maintemp.Execute(w, Data{ListOfArtist, page})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {

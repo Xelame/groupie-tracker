@@ -18,7 +18,7 @@
             {{end}}    
         </div>
             {{range .PageNumber}} <!-- $ = la donnée importé -->
-                <a href="/artists?name={{.}}" class="button">{{.}}</a>
+                <a href="/artists?page={{.}}" class="button">{{.}}</a>
             {{end}}   
         </form>
     </body>
