@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -47,6 +48,8 @@ type Data struct {
 }
 
 var Maintemp = OpenTemplate("index")
+var ArtistTemp = OpenTemplate("artist")
+var FormRoute = []string{"pages"}
 
 func main() {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
@@ -54,7 +57,15 @@ func main() {
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		PATH = GetUrl(r)
 		if PATH[0] == "artists" {
-			ArtistHandler(rw, r)
+			if len(PATH) > 1 {
+				_, err := strconv.Atoi(PATH[1])
+				if err != nil {
+
+				}
+				ArtistHandler(rw, r)
+			} else {
+				AllArtistsHandler(rw, r)
+			}
 		}
 	})
 	fmt.Println("Server Open In http://localhost:8080")
@@ -82,7 +93,6 @@ func GetUrl(r *http.Request) []string {
 	path := strings.Split(r.URL.Path[1:], "/")
 	return path
 }
-
 func OpenTemplate(fileName string) *template.Template {
 	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html", "./templates/components/navbar.html"))
 	return tmpl
@@ -90,7 +100,7 @@ func OpenTemplate(fileName string) *template.Template {
 
 // GET DESCRIPTION PART _______________________________________________________________________________________________________________
 
-func GetWiki(target Artist) {
+func GetWiki(target *Artist) {
 	url := ""
 	switch target.Name {
 	case "Green Day":
@@ -125,7 +135,6 @@ func GetWiki(target Artist) {
 		url = strings.ReplaceAll(url, " ", "_")
 	}
 
-	fmt.Println(url)
 	res, err := http.Get(url)
 
 	if err != nil {
@@ -189,7 +198,8 @@ func RegexTag(content string) string {
 
 //______________________________________________________________________________________________________________________________
 
-func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
+func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Query()["name"])
 	var listOfArtist []Artist
 	page := []int{}
 	if len(PATH) == 1 {
@@ -207,11 +217,12 @@ func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
 	for i := 1; i <= len(listOfArtist)/12; i++ {
 		page = append(page, i)
 	}
-	if len(PATH) > 1 && PATH[1] != "" {
-		var artist Artist
-		searchInApi(fmt.Sprintf("artists/%s", PATH[1]), &artist)
-		listOfArtist = []Artist{artist}
-		page = []int{}
-	}
-	Maintemp.Execute(rw, Data{listOfArtist, page})
+	Maintemp.Execute(w, Data{listOfArtist, page})
+}
+
+func ArtistHandler(w http.ResponseWriter, r *http.Request) {
+	var artist Artist
+	searchInApi(fmt.Sprintf("artists/%s", PATH[1]), &artist)
+	GetWiki(&artist)
+	ArtistTemp.Execute(w, artist)
 }
