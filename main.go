@@ -194,6 +194,7 @@ func RegexTag(content string) string {
 //______________________________________________________________________________________________________________________________
 
 func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
+	Maintemp = OpenTemplate("index")
 	listOfArtist := &[]Artist{}
 	if len(PATH) == 1 {
 		searchInApi("artists", listOfArtist)
