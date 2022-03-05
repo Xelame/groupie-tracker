@@ -27,9 +27,16 @@ type Dates struct {
 }
 
 type Locations struct {
-	Id        int
-	Locations []string
-	Dates     string
+	Index []struct {
+		ID        int
+		Locations []string
+		Dates     string
+	}
+}
+
+type Loc struct {
+	Artists  []string
+	Location string
 }
 
 type Relations struct {
@@ -102,4 +109,33 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	SearchInApi(fmt.Sprintf("artists/%s", PATH[1]), &artist)
 	GetWiki(&artist)
 	ArtistTemp.Execute(w, artist)
+}
+
+func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
+	Maintemp = OpenTemplate("locations")
+	var locations Locations
+	var listOfLocations string
+	var indexes []int
+	var ArtistsinArea []string
+
+	SearchInApi("locations", &locations)
+	listOfArtist := &[]Artist{}
+	SearchInApi("artists", listOfArtist)
+
+	if r.Method == "POST" {
+		for i := 0; i <= 51; i++ {
+			for j := 0; j < len(locations.Index[i].Locations); j++ {
+				if strings.Contains(strings.ToUpper(locations.Index[i].Locations[j]), strings.ToUpper(strings.ReplaceAll(r.FormValue("locations"), " ", "_"))) {
+					listOfLocations = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
+					indexes = append(indexes, i)
+					ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name)
+				}
+			}
+		}
+	}
+	start := Loc{ArtistsinArea, listOfLocations}
+	fmt.Println(start)
+	Maintemp.Execute(rw, start)
+	fmt.Println(ArtistsinArea)
+	fmt.Println(listOfLocations)
 }
