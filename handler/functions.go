@@ -136,3 +136,43 @@ func RegexTag(content string) string {
 }
 
 //______________________________________________________________________________________________________________________________
+
+func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
+	listOfArtist := &[]Artist{}
+	if len(PATH) == 1 {
+		searchInApi("artists", listOfArtist)
+		if r.Method == "POST" {
+			list := &[]Artist{}
+			for i := 0; i <= 51; i++ {
+				if strings.Contains(strings.ToUpper((*listOfArtist)[i].Name), strings.ToUpper(r.FormValue("artists"))) {
+					*list = append(*list, (*listOfArtist)[i])
+				}
+			}
+			listOfArtist = list
+		}
+	} else if len(PATH) > 1 && PATH[1] != "" {
+		artist := &Artist{}
+		searchInApi(fmt.Sprintf("artists/%s", PATH[1]), artist)
+		listOfArtist = &[]Artist{*artist}
+	}
+	fmt.Println(listOfArtist)
+	Maintemp.Execute(rw, listOfArtist)
+}
+
+func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
+	Maintemp = OpenTemplate("locations")
+	var locations Locations
+	var listOfLocations string
+	searchInApi("locations", &locations)
+	if r.Method == "POST" {
+		for i := 0; i <= 51; i++ {
+			for j := 0; j < len(locations.Index[i].Locations); j++ {
+				if strings.Contains(strings.ToUpper(locations.Index[i].Locations[j]), strings.ToUpper(strings.ReplaceAll(r.FormValue("locations"), " ", "_"))) {
+					listOfLocations = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
+				}
+			}
+		}
+	}
+	Maintemp.Execute(rw, listOfLocations)
+	fmt.Println(listOfLocations)
+}
