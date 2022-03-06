@@ -17,9 +17,13 @@
               {{template "card" .}}
             {{end}}    
         </div>
-            {{range .PageNumber}} <!-- $ = la donnée importé -->
-                <a href="/artists?page={{.}}" class="button">{{.}}</a>
-            {{end}}   
+            <form action="/artists" method="post">
+                {{range .PageNumber}} <!-- $ = la donnée importé -->
+                    <button type="submit" name="page" value="{{.}}">{{.}}</button>
+                {{end}}   
+                <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
+                <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
+            </form>
         </form>
     </body>
 </html>

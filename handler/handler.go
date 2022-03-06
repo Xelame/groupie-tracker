@@ -3,10 +3,22 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
 var PATH = []string{}
+
+type ArtistHandlerData struct {
+	ListOfArtists []Artist
+	PageNumber    []int
+	SavedData     Cookies
+}
+
+type Cookies struct {
+	Page      int
+	SearchBar string
+}
 
 type Artist struct {
 	Id           int
@@ -44,15 +56,8 @@ type Relations struct {
 	DatesLocations interface{}
 }
 
-type Data struct {
-	ListOfArtists []Artist
-	PageNumber    []int
-}
-
 var Maintemp = OpenTemplate("index")
 var ArtistTemp = OpenTemplate("artist")
-var FormRoute = []string{"pages"}
-var ListOfArtist []Artist
 
 func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 	PATH = GetUrl(r)
@@ -66,49 +71,74 @@ func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 }
 
 func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
-	isPaginated := false
-	page := []int{}
-	listmp := []Artist{}
+	var isPaginated = false
+	var pages []int
+	var listmp []Artist
+	var listOfArtist []Artist
+	var artistName string
+	var page int
 
-	if len(r.URL.Query()["page"]) == 0 {
-		SearchInApi("artists", &ListOfArtist)
+	SearchInApi("artists", &listOfArtist)
+
+	if r.Method == "POST" {
+		r.ParseForm()
+
+		if r.FormValue("artists") == "" {
+			artistName = r.FormValue("savedArtists")
+		} else {
+			artistName = r.FormValue("artists")
+		}
+
+		for i := 0; i < len(listOfArtist); i++ {
+			if strings.Contains(strings.ToUpper(listOfArtist[i].Name), strings.ToUpper(artistName)) {
+				listmp = append(listmp, listOfArtist[i])
+			}
+		}
+		listOfArtist = listmp
+	}
+
+	for i := 1; i <= len(listOfArtist)/12+1; i++ {
+		pages = append(pages, i)
 	}
 
 	if r.Method == "POST" {
-		for i := 0; i < len(ListOfArtist); i++ {
-			if strings.Contains(strings.ToUpper(ListOfArtist[i].Name), strings.ToUpper(r.FormValue("artists"))) {
-				listmp = append(listmp, ListOfArtist[i])
-			}
-		}
-		ListOfArtist = listmp
-	}
-
-	for i := 1; i <= len(ListOfArtist)/12+1; i++ {
-		if len(r.URL.Query()["page"]) > 0 && fmt.Sprintf("%d", i) == r.URL.Query()["page"][0] {
-			isPaginated = true
-			if i*12 > len(ListOfArtist) {
-				listmp = ListOfArtist[12*(i-1):]
+		isPaginated = true
+		if r.FormValue("page") == "" {
+			if r.FormValue("savedPage") == "" {
+				page = 1
 			} else {
-				listmp = ListOfArtist[12*(i-1) : 12*i]
+				page, _ = strconv.Atoi(r.FormValue("savedPage"))
 			}
+		} else {
+			page, _ = strconv.Atoi(r.FormValue("page"))
 		}
-		page = append(page, i)
+		if page*12 > len(listOfArtist) {
+			listmp = listOfArtist[12*(page-1):]
+		} else {
+			listmp = listOfArtist[12*(page-1) : 12*page]
+		}
+
+		fmt.Println("La recherche des artistes=" + artistName + "!")
+		fmt.Println("avant c'était" + r.FormValue("savedArtists") + "!")
+		fmt.Printf("Nous sur la page%d!\n", page)
+		fmt.Println("avant c'était" + r.FormValue("savedPage") + "!")
+
 	}
 
-	if !isPaginated && len(ListOfArtist) > 12 {
-		ListOfArtist = ListOfArtist[:12]
+	if !isPaginated && len(listOfArtist) > 12 {
+		listOfArtist = listOfArtist[:12]
 	} else {
-		ListOfArtist = listmp
+		listOfArtist = listmp
 	}
 
-	Maintemp.Execute(w, Data{ListOfArtist, page})
+	Maintemp.Execute(w, ArtistHandlerData{listOfArtist, pages, Cookies{page, artistName}})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	var artist Artist
 	SearchInApi(fmt.Sprintf("artists/%s", PATH[1]), &artist)
 	GetWiki(&artist)
-	ArtistTemp.Execute(w, artist)
+	ArtistTemp.Execute(w, artist) // En cours
 }
 
 func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
