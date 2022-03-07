@@ -43,6 +43,7 @@ type Locations struct {
 		ID        int
 		Locations []string
 		Dates     string
+		Trie      string
 	}
 }
 
@@ -76,6 +77,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	var listmp []Artist
 	var listOfArtist []Artist
 	var artistName string
+	var trieur string
 	var page int
 
 	SearchInApi("artists", &listOfArtist)
@@ -89,11 +91,18 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 			artistName = r.FormValue("artists")
 		}
 
+		if r.FormValue("trie") == "" {
+			trieur = r.FormValue("savedTrie")
+		} else {
+			trieur = r.FormValue("trie")
+		}
+
 		for i := 0; i < len(listOfArtist); i++ {
 			if strings.Contains(strings.ToUpper(listOfArtist[i].Name), strings.ToUpper(artistName)) {
 				listmp = append(listmp, listOfArtist[i])
 			}
 		}
+		fmt.Println(trieur)
 		listOfArtist = listmp
 	}
 
@@ -104,14 +113,11 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		isPaginated = true
 		if r.FormValue("page") == "" {
-			if r.FormValue("savedPage") == "" {
-				page = 1
-			} else {
-				page, _ = strconv.Atoi(r.FormValue("savedPage"))
-			}
+			page, _ = strconv.Atoi(r.FormValue("savedPage"))
 		} else {
 			page, _ = strconv.Atoi(r.FormValue("page"))
 		}
+
 		if page*12 > len(listOfArtist) {
 			listmp = listOfArtist[12*(page-1):]
 		} else {
@@ -119,6 +125,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		fmt.Println("La recherche des artistes=" + artistName + "!")
+		fmt.Println("Trie par " + r.FormValue("filtre") + "!")
 		fmt.Println("avant c'était" + r.FormValue("savedArtists") + "!")
 		fmt.Printf("Nous sur la page%d!\n", page)
 		fmt.Println("avant c'était" + r.FormValue("savedPage") + "!")

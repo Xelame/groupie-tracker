@@ -10,6 +10,22 @@
         <form action="/artists" method="post">
             <input type="text" name="artists">
             <button type="submit">Rechercher</button>
+
+            <select name="trie">
+                <option value="">--Please choose an option--</option>
+                <optgroup label="Alphabétiques">
+                    <option value="A">A-Z</option>
+                    <option value="Z">Z-A</option>
+                  </optgroup>
+                  <optgroup label="Nombre de membres">
+                    <option value="0">Croissant</option>
+                    <option value="9">Décroissant</option>
+                  </optgroup>
+                  <optgroup label="Âge">
+                    <option value="1000">La plus vieille</option>
+                    <option value="2022">La plus jeune</option>
+                  </optgroup>
+            </select>
         </form>
         <div class="cards-list">
             <!-- $ = la donnée importé -->
@@ -23,6 +39,7 @@
                 {{end}}   
                 <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
                 <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
+                <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">
             </form>
         </form>
     </body>
