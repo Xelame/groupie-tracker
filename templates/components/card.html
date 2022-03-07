@@ -1,0 +1,10 @@
+{{define "card"}}
+<div>
+    <a href="/artists/{{.Id}}" class="card">
+    <img src="{{.Image}}" class="card_image"/>
+    <div class="card_title">
+        <p>{{.Name}}</p>
+    </div>
+    </a>
+</div>
+{{end}}

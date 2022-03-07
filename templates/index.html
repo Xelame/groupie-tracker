@@ -13,9 +13,13 @@
         </form>
         <div class="cards-list">
             <!-- $ = la donnée importé -->
-            {{range $}} <!-- $ = la donnée importé -->
+            {{range .ListOfArtists}} <!-- $ = la donnée importé -->
               {{template "card" .}}
             {{end}}    
         </div>
+            {{range .PageNumber}} <!-- $ = la donnée importé -->
+                <a href="/artists?page={{.}}" class="button">{{.}}</a>
+            {{end}}   
+        </form>
     </body>
 </html>

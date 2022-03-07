@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"encoding/json"
@@ -10,59 +10,13 @@ import (
 	"strings"
 )
 
-var PATH = []string{}
-
-type Artist struct {
-	Id           int
-	Image        string
-	Name         string
-	Members      []string
-	CreationDate int
-	FirstAlbum   string
-	Locations    string
-	ConcertDates string
-	Relations    string
-	Description  string
-}
-
-type Dates struct {
-	Id    int
-	Dates []string
-}
-
-type Locations struct {
-	Id        int
-	Locations []string
-	Dates     string
-}
-
-type Relations struct {
-	ID             int
-	DatesLocations interface{}
-}
-
-var Maintemp = OpenTemplate("index")
-
-func main() {
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./static/css"))))
-	// Apply a function in this page (don't worry i display every time a html template ^^)
-	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		PATH = GetUrl(r)
-		fmt.Println(PATH)
-		if PATH[0] == "artists" {
-			ArtistHandler(rw, r)
-		}
-	})
-	fmt.Println("Server Open In http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
-}
-
-func searchInApi(endOfUrl string, target interface{}) error {
+// target = pointer of our interface so &target
+func SearchInApi(endOfUrl string, target interface{}) error {
 	var url string
 	if endOfUrl == "" {
 		url = "https://groupietrackers.herokuapp.com/api"
 	} else {
-		url = fmt.Sprintf("https://groupietrackers.herokuapp.com/api/%s", endOfUrl)
+		url = "https://groupietrackers.herokuapp.com/api/" + endOfUrl
 	}
 
 	res, err := http.Get(url)
@@ -70,7 +24,7 @@ func searchInApi(endOfUrl string, target interface{}) error {
 		return err
 	}
 
-	return json.NewDecoder(res.Body).Decode(target)
+	return json.NewDecoder(res.Body).Decode(&target)
 }
 
 func GetUrl(r *http.Request) []string {
@@ -83,8 +37,9 @@ func OpenTemplate(fileName string) *template.Template {
 	return tmpl
 }
 
-// GET DESCRIPTION PART _______________________________________________________________________________________________________________
-func GetWiki(target Artist) {
+// GET DESCRIPTION PART ________________________________________________________________________________________________________
+
+func GetWiki(target *Artist) {
 	url := ""
 	switch target.Name {
 	case "Green Day":
@@ -115,11 +70,10 @@ func GetWiki(target Artist) {
 	case "NWA":
 		url = "https://fr.wikipedia.org/wiki/NWA_(groupe)"
 	default:
-		url = fmt.Sprintf("https://fr.wikipedia.org/wiki/%s", target.Name)
+		url = "https://fr.wikipedia.org/wiki/" + target.Name
 		url = strings.ReplaceAll(url, " ", "_")
 	}
 
-	fmt.Println(url)
 	res, err := http.Get(url)
 
 	if err != nil {
@@ -182,23 +136,3 @@ func RegexTag(content string) string {
 }
 
 //______________________________________________________________________________________________________________________________
-func ArtistHandler(rw http.ResponseWriter, r *http.Request) {
-	listOfArtist := &[]Artist{}
-	if len(PATH) == 1 {
-		searchInApi("artists", listOfArtist)
-		if r.Method == "POST" {
-			list := &[]Artist{}
-			for i := 0; i <= 51; i++ {
-				if strings.Contains(strings.ToUpper((*listOfArtist)[i].Name), strings.ToUpper(r.FormValue("artists"))) {
-					*list = append(*list, (*listOfArtist)[i])
-				}
-			}
-			listOfArtist = list
-		}
-	} else if len(PATH) > 1 && PATH[1] != "" {
-		artist := &Artist{}
-		searchInApi(fmt.Sprintf("artists/%s", PATH[1]), artist)
-		listOfArtist = &[]Artist{*artist}
-	}
-	Maintemp.Execute(rw, listOfArtist)
-}
