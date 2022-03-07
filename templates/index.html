@@ -9,34 +9,35 @@
         {{template "navbar"}}
         <form action="/artists" method="post">
             <input type="text" name="artists">
-            <button type="submit">Rechercher</button>
 
-            <select name="trie">
-                <option value="">--Please choose an option--</option>
-                <optgroup label="Alphabétiques">
+            <select name="trie" onchange="this.form.submit()"> 
+                <option value="">Trier par :</option>
+                <optgroup label="Ordre alphabétique">
                     <option value="A">A-Z</option>
                     <option value="Z">Z-A</option>
                   </optgroup>
                   <optgroup label="Nombre de membres">
-                    <option value="0">Croissant</option>
-                    <option value="9">Décroissant</option>
+                    <option value="C">Croissant</option>
+                    <option value="D">Décroissant</option>
                   </optgroup>
                   <optgroup label="Âge">
-                    <option value="1000">La plus vieille</option>
-                    <option value="2022">La plus jeune</option>
+                    <option value="O">La plus vieille</option>
+                    <option value="Y">La plus jeune</option>
                   </optgroup>
             </select>
+
+            <button type="submit">Rechercher</button>
         </form>
         <div class="cards-list">
-            <!-- $ = la donnée importé -->
-            {{range .ListOfArtists}} <!-- $ = la donnée importé -->
+            {{range .ListOfArtists}} 
               {{template "card" .}}
             {{end}}    
         </div>
             <form action="/artists" method="post">
-                {{range .PageNumber}} <!-- $ = la donnée importé -->
+                {{range .PageNumber}} 
                     <button type="submit" name="page" value="{{.}}">{{.}}</button>
                 {{end}}   
+                <!-- Saved data in form ^^ -->
                 <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
                 <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
                 <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">

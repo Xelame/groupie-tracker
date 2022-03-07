@@ -18,6 +18,7 @@ type ArtistHandlerData struct {
 type Cookies struct {
 	Page      int
 	SearchBar string
+	Trie      string
 }
 
 type Artist struct {
@@ -97,13 +98,25 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 			trieur = r.FormValue("trie")
 		}
 
+		if r.FormValue("page") == "" {
+			if r.FormValue("savedPage") == "" {
+				page = 1
+			} else {
+				page, _ = strconv.Atoi(r.FormValue("savedPage"))
+			}
+		} else {
+			page, _ = strconv.Atoi(r.FormValue("page"))
+		}
+
 		for i := 0; i < len(listOfArtist); i++ {
 			if strings.Contains(strings.ToUpper(listOfArtist[i].Name), strings.ToUpper(artistName)) {
 				listmp = append(listmp, listOfArtist[i])
 			}
 		}
-		fmt.Println(trieur)
+
 		listOfArtist = listmp
+
+		ArtistTrie(listOfArtist, trieur)
 	}
 
 	for i := 1; i <= len(listOfArtist)/12+1; i++ {
@@ -112,11 +125,6 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		isPaginated = true
-		if r.FormValue("page") == "" {
-			page, _ = strconv.Atoi(r.FormValue("savedPage"))
-		} else {
-			page, _ = strconv.Atoi(r.FormValue("page"))
-		}
 
 		if page*12 > len(listOfArtist) {
 			listmp = listOfArtist[12*(page-1):]
@@ -138,7 +146,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		listOfArtist = listmp
 	}
 
-	Maintemp.Execute(w, ArtistHandlerData{listOfArtist, pages, Cookies{page, artistName}})
+	Maintemp.Execute(w, ArtistHandlerData{listOfArtist, pages, Cookies{page, artistName, trieur}})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
