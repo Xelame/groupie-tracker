@@ -37,8 +37,9 @@ type Locations struct {
 }
 
 type Loc struct {
-	Artists  []string
-	Location string
+	Artists         []string
+	Location        string
+	ListOfLocations []string
 	//Dates    []string
 }
 
@@ -117,9 +118,11 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	Maintemp = OpenTemplate("locations")
 	var locations Locations
-	var listOfLocations string
+	var location string
 	var indexes []int
 	var ArtistsinArea []string
+	var listOfListsOfLocations [][]string
+	var listOfLocations []string
 
 	SearchInApi("locations", &locations)
 	listOfArtist := &[]Artist{}
@@ -127,12 +130,22 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	var listOfDates Dates
 	SearchInApi("dates", &listOfDates)
 	//fmt.Println(listOfDates)
-
+	for i := 0; i < len(locations.Index); i++ {
+		listOfListsOfLocations = append(listOfListsOfLocations, locations.Index[i].Locations)
+	}
+	for j := 0; j < 51; j++ {
+		for s := 0; s < len(listOfListsOfLocations[j]); s++ {
+			listOfLocations = append(listOfLocations, listOfListsOfLocations[j][s])
+		}
+	}
+	fmt.Println("1:", len(listOfLocations))
+	fmt.Println("2:", len(removeDuplicateStr(listOfLocations)))
 	if r.Method == "POST" {
+		fmt.Println(r.FormValue("locations"))
 		for i := 0; i <= 51; i++ {
 			for j := 0; j < len(locations.Index[i].Locations); j++ {
 				if strings.Contains(strings.ToUpper(locations.Index[i].Locations[j]), strings.ToUpper(strings.ReplaceAll(r.FormValue("locations"), " ", "_"))) {
-					listOfLocations = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
+					location = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
 					//date = append(date, listOfDates.Index[i].Dates[j])
 					indexes = append(indexes, i)
 					ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name+" in "+listOfDates.Index[i].Dates[j])
@@ -140,10 +153,22 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	start := Loc{ArtistsinArea, listOfLocations}
+	start := Loc{ArtistsinArea, location, listOfLocations}
 	//fmt.Println(start)
 	Maintemp.Execute(rw, start)
 	//fmt.Println(date)
 	//fmt.Println(ArtistsinArea)
 	//fmt.Println(listOfLocations)
+}
+
+func removeDuplicateStr(strSlice []string) []string {
+	allKeys := make(map[string]bool)
+	list := []string{}
+	for _, item := range strSlice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
 }

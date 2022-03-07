@@ -5,10 +5,21 @@
         <title>Locations</title>
     </head>
     <body>
+        <label for="locations">Choose a location:</label>
         <form action="/locations" method="post">
-            <input type="text" name="locations">
-            <button type="submit">Rechercher</button>
+        <select name="locations" id="locations">
+        <option value="name">--Please choose an option--</option>
+        {{range .ListOfLocations}}
+        <option >{{.}}</option>
+         {{end}}
+            <input type="submit" name="locations">
         </form>
+       
+
+
+   
+</select>
+
         <iframe
         width="450"
         height="250"
