@@ -126,7 +126,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	SearchInApi("artists", listOfArtist)
 	var listOfDates Dates
 	SearchInApi("dates", &listOfDates)
-	fmt.Println(listOfDates)
+	//fmt.Println(listOfDates)
 
 	if r.Method == "POST" {
 		for i := 0; i <= 51; i++ {
