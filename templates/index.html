@@ -13,21 +13,49 @@
             <select name="trie" onchange="this.form.submit()"> 
                 <option value="">Trier par :</option>
                 <optgroup label="Ordre alphabétique">
-                    <option value="A">A-Z</option>
-                    <option value="Z">Z-A</option>
+                    {{ if (eq .SavedData.Trie "A") }}
+                        <option value="A" selected>A-Z</option>
+                    {{ else }}
+                        <option value="A">A-Z</option>
+                    {{ end }}
+
+                    {{ if (eq .SavedData.Trie "Z") }}
+                        <option value="Z" selected>Z-A</option>
+                    {{ else }}
+                        <option value="Z">Z-A</option>
+                    {{ end }}
                   </optgroup>
                   <optgroup label="Nombre de membres">
-                    <option value="C">Croissant</option>
-                    <option value="D">Décroissant</option>
+                    {{ if (eq .SavedData.Trie "C") }}
+                        <option value="C" selected>Croissant</option>
+                    {{ else }}
+                        <option value="C">Croissant</option>
+                    {{ end }}  
+
+                    {{ if (eq .SavedData.Trie "D") }}
+                        <option value="D" selected>Décroissant</option>
+                    {{ else }}
+                        <option value="D">Décroissant</option>
+                    {{ end }}  
                   </optgroup>
                   <optgroup label="Âge">
-                    <option value="O">La plus vieille</option>
-                    <option value="Y">La plus jeune</option>
+                    {{ if (eq .SavedData.Trie "O") }}
+                        <option value="O" selected>La plus vieille</option>
+                    {{ else }}
+                        <option value="O">La plus vieille</option>
+                    {{ end }}  
+
+                    {{ if (eq .SavedData.Trie "Y") }}
+                        <option value="Y" selected>La plus jeune</option>
+                    {{ else }}
+                        <option value="Y">La plus jeune</option>
+                    {{ end }}  
                   </optgroup>
             </select>
 
             <button type="submit">Rechercher</button>
         </form>
+        
         <div class="cards-list">
             {{range .ListOfArtists}} 
               {{template "card" .}}

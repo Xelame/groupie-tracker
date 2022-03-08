@@ -132,11 +132,13 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 			listmp = listOfArtist[12*(page-1) : 12*page]
 		}
 
-		fmt.Println("La recherche des artistes=" + artistName + "!")
-		fmt.Println("Trie par " + r.FormValue("filtre") + "!")
-		fmt.Println("avant c'était" + r.FormValue("savedArtists") + "!")
-		fmt.Printf("Nous sur la page%d!\n", page)
-		fmt.Println("avant c'était" + r.FormValue("savedPage") + "!")
+		fmt.Println("-----------------------------------------------")
+		fmt.Println("\nLa recherche des artistes=", artistName, "!")
+		fmt.Println("Avant c'était", r.FormValue("savedArtists"), "!")
+		fmt.Printf("\nSur la page%d!\n", page)
+		fmt.Println("Avant c'était", r.FormValue("savedPage"), "!")
+		fmt.Println("\nTrie par ", r.FormValue("trie"), "!")
+		fmt.Println("Avant c'était", r.FormValue("savedTrie"), "!")
 
 	}
 
