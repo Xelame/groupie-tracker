@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"strings"
 )
 
@@ -44,8 +45,10 @@ type Loc struct {
 }
 
 type Relations struct {
-	ID             int
-	DatesLocations interface{}
+	Index []struct {
+		ID             int
+		DatesLocations map[string][]string //interface{}
+	}
 }
 
 type Data struct {
@@ -129,7 +132,10 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	SearchInApi("artists", listOfArtist)
 	var listOfDates Dates
 	SearchInApi("dates", &listOfDates)
-	//fmt.Println(listOfDates)
+	var listOfRelations Relations
+	SearchInApi("relation", &listOfRelations)
+	fmt.Println(listOfRelations.Index[0].DatesLocations["los_angeles-usa"])
+
 	for i := 0; i < len(locations.Index); i++ {
 		listOfListsOfLocations = append(listOfListsOfLocations, locations.Index[i].Locations)
 	}
@@ -138,6 +144,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 			listOfLocations = append(listOfLocations, listOfListsOfLocations[j][s])
 		}
 	}
+	sort.Sort(sort.StringSlice(listOfLocations)) //Sort List of Locations alphabetically
 	fmt.Println("1:", len(listOfLocations))
 	fmt.Println("2:", len(removeDuplicateStr(listOfLocations)))
 	if r.Method == "POST" {
@@ -148,20 +155,18 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 					location = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
 					//date = append(date, listOfDates.Index[i].Dates[j])
 					indexes = append(indexes, i)
-					ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name+" in "+listOfDates.Index[i].Dates[j])
+					for s := 0; s < len(listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]]); s++ {
+						ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name+" in "+listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]][s]) //listOfDates.Index[i].Dates[j])
+					}
 				}
 			}
 		}
 	}
-	start := Loc{ArtistsinArea, location, listOfLocations}
-	//fmt.Println(start)
+	start := Loc{ArtistsinArea, location, removeDuplicateStr(listOfLocations)}
 	Maintemp.Execute(rw, start)
-	//fmt.Println(date)
-	//fmt.Println(ArtistsinArea)
-	//fmt.Println(listOfLocations)
 }
 
-func removeDuplicateStr(strSlice []string) []string {
+func removeDuplicateStr(strSlice []string) []string { //We use this function to remove duplicate strings in an array of strings
 	allKeys := make(map[string]bool)
 	list := []string{}
 	for _, item := range strSlice {
