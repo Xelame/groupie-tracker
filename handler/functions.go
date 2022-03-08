@@ -41,27 +41,27 @@ func OpenTemplate(fileName string) *template.Template {
 func ArtistTrie(list []Artist, categorie string) {
 	switch categorie {
 	case "A":
-		sort.Slice(list, func(i, j int) bool {
+		sort.SliceStable(list, func(i, j int) bool {
 			return list[i].Name < list[j].Name
 		})
 	case "Z":
-		sort.Slice(list, func(i, j int) bool {
+		sort.SliceStable(list, func(i, j int) bool {
 			return list[i].Name > list[j].Name
 		})
 	case "C":
-		sort.Slice(list, func(i, j int) bool {
+		sort.SliceStable(list, func(i, j int) bool {
 			return len(list[i].Members) < len(list[j].Members)
 		})
 	case "D":
-		sort.Slice(list, func(i, j int) bool {
+		sort.SliceStable(list, func(i, j int) bool {
 			return len(list[i].Members) > len(list[j].Members)
 		})
 	case "O":
-		sort.Slice(list, func(i, j int) bool {
+		sort.SliceStable(list, func(i, j int) bool {
 			return list[i].CreationDate < list[j].CreationDate
 		})
 	case "Y":
-		sort.Slice(list, func(i, j int) bool {
+		sort.SliceStable(list, func(i, j int) bool {
 			return list[i].CreationDate > list[j].CreationDate
 		})
 	}
