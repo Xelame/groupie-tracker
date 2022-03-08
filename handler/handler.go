@@ -60,10 +60,16 @@ type Relations struct {
 
 var Maintemp = OpenTemplate("index")
 var ArtistTemp = OpenTemplate("artist")
+var HomeTemp = OpenTemplate("home")
+var FormRoute = []string{"pages"}
+var ListOfArtist []Artist
 
 func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 	PATH = GetUrl(r)
-	if PATH[0] == "artists" {
+	fmt.Println(PATH[0])
+	if PATH[0] == "locations" {
+		LocationsHandler(rw, r)
+	} else if PATH[0] == "artists" {
 		if len(PATH) > 1 {
 			ArtistHandler(rw, r)
 		} else {
@@ -185,4 +191,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	Maintemp.Execute(rw, start)
 	fmt.Println(ArtistsinArea)
 	fmt.Println(listOfLocations)
+
 }
+
+//func HomeHandler(w http.ResponseWriter, r *http.Request) {
