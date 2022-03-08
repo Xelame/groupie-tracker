@@ -58,7 +58,8 @@ type Relations struct {
 	DatesLocations interface{}
 }
 
-var Maintemp = OpenTemplate("index")
+var Locationtemp = OpenTemplate("locations")
+var Listtemp = OpenTemplate("index")
 var ArtistTemp = OpenTemplate("artist")
 var HomeTemp = OpenTemplate("home")
 var FormRoute = []string{"pages"}
@@ -154,7 +155,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		listOfArtist = listmp
 	}
 
-	Maintemp.Execute(w, ArtistHandlerData{listOfArtist, pages, Cookies{page, artistName, trieur}})
+	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, Cookies{page, artistName, trieur}})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
@@ -165,7 +166,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
-	Maintemp = OpenTemplate("locations")
 	var locations Locations
 	var listOfLocations string
 	var indexes []int
@@ -188,7 +188,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 	start := Loc{ArtistsinArea, listOfLocations}
 	fmt.Println(start)
-	Maintemp.Execute(rw, start)
+	Locationtemp.Execute(rw, start)
 	fmt.Println(ArtistsinArea)
 	fmt.Println(listOfLocations)
 
