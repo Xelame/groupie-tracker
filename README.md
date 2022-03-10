@@ -66,13 +66,13 @@ Server Open In http://localhost:8080/home
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] HOME
-- [ ] ARTIST
-    - [ ] liste de tout les artistes(cartes)
-        - [ ] Description
-        - [ ] Map
-- [ ] MAP
-    - [ ] liste des artistes présent dans la ville recherché
+|-->HOME
+|-->ARTIST
+|  |--->[ ] liste de tout les artistes(cartes)
+|    |--->[ ] Description
+|      |--->[ ] Map
+|-->[ ] MAP
+    |--->[ ] liste des artistes présent dans la ville recherché
 
 
 Regardez notre [JamBoard](https://jamboard.google.com/d/1jU73aVwm4rNw5_GPL22fErTuJzbE6COGu4fxu_CPicY/edit?usp=sharing) pour voir comment nous nous sommes organisé
