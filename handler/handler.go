@@ -16,6 +16,7 @@ var PATH = []string{}
 //var HomeTemp = OpenTemplate("home")
 var FormRoute = []string{"pages"}
 var ListOfArtist []Artist
+var forbiddenInput = []string{"{", "=>", "}", ";", ">", "<", "&", "+", "-", "%", "%q", "\n", "#", "~", "`", "^", "(", ")", "[", "]", "|"}
 
 func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 	PATH = GetUrl(r)
@@ -53,7 +54,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 
 		if r.FormValue("artists") == "" {
 			artistName = r.FormValue("savedArtists")
-		} else if strings.Contains(r.FormValue("artists"), "{") {
+		} else if CheckForbiddenInput(r.FormValue("artists")) {
 			errortmpl, erR := OpenTemplate("err400")
 			if erR != nil {
 				fmt.Fprint(w, "Not working")
@@ -92,6 +93,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 				errortmpl, erR := OpenTemplate("err500")
 				if erR != nil {
 					fmt.Fprint(w, "Not working")
+					return
 				}
 				errortmpl.Execute(w, nil)
 				return
@@ -128,6 +130,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 				errortmpl, erR := OpenTemplate("err500")
 				if erR != nil {
 					fmt.Fprint(w, "Not working")
+					return
 				}
 				errortmpl.Execute(w, nil)
 				return
@@ -175,6 +178,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	Listtemp, erR := OpenTemplate("index")
 	if erR != nil {
 		fmt.Fprint(w, "Not working")
+		return
 	}
 	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, members, Cookies{page, artistName, trieur, memberNumbers}})
 }
@@ -214,6 +218,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 		errortmpl, erR := OpenTemplate("err500")
 		if erR != nil {
 			fmt.Fprint(rw, "Not working")
+			return
 		}
 		errortmpl.Execute(rw, nil)
 		return
@@ -224,6 +229,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 		errortmpl, erR := OpenTemplate("err500")
 		if erR != nil {
 			fmt.Fprint(rw, "Not working")
+			return
 		}
 		errortmpl.Execute(rw, nil)
 		return
@@ -233,6 +239,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 		errortmpl, erR := OpenTemplate("err500")
 		if erR != nil {
 			fmt.Fprint(rw, "Not working")
+			return
 		}
 		errortmpl.Execute(rw, nil)
 		return
@@ -243,6 +250,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 		errortmpl, erR := OpenTemplate("err500")
 		if erR != nil {
 			fmt.Fprint(rw, "Not working")
+			return
 		}
 		errortmpl.Execute(rw, nil)
 		return
@@ -301,6 +309,17 @@ func Error404Handler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	errortmpl.Execute(rw, nil)
+}
+
+func CheckForbiddenInput(str string) bool {
+	result := false
+	for i := 0; i < len(forbiddenInput); i++ {
+		if strings.Contains(str, forbiddenInput[i]) {
+			result = true
+			break
+		}
+	}
+	return result
 }
 
 //func HomeHandler(w http.ResponseWriter, r *http.Request) {
