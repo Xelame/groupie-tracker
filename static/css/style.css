@@ -2,7 +2,7 @@
   font-family: Shockwave;
   src: local("Helvetica Neue Bold"),
        local("HelveticaNeue-Bold"),
-       url(./font/shockwave/Shockwave.ttf);
+       url(/static/font/Shockwave.ttf);
   font-weight: bold;
 }
 
@@ -11,7 +11,6 @@ body {
   background-image:url(/static/img/84248.png);
   background-repeat:no-repeat;
   background-size: cover;
-  font-family: "Shockwave", serif;
   margin: 0;
 }
 header{
@@ -136,7 +135,6 @@ nav a:nth-child(3):hover ~ #indicator {
   left: 70%;
   background: linear-gradient(130deg, purple, palevioletred);
 }
-
 /** Card */
 
 .cards-list {

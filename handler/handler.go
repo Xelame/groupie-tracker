@@ -66,6 +66,8 @@ func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 		} else {
 			AllArtistsHandler(rw, r)
 		}
+	} else if PATH[0] == "home" {
+		HomeHandler(rw, r)
 	}
 }
 
@@ -145,4 +147,6 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-//func HomeHandler(w http.ResponseWriter, r *http.Request) {
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	HomeTemp.Execute(w, nil)
+}
