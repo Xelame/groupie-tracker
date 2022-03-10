@@ -10,7 +10,7 @@
 <h3 align="center">Groupie-Tracker</h3>
 
   <p align="center">
-    Groupie Trackers consiste à recevoir une [API](https://groupietrackers.herokuapp.com/api) donnée et à manipuler les données qu'elle contient, afin de créer un site Web convivial où vous pouvez afficher les informations sur les groupes à travers plusieurs visualisations de données. Ce projet se concentre également sur la création d'événements/actions et sur leur visualisation.
+    Groupie Trackers consiste à recevoir une API donnée et à manipuler les données qu'elle contient, afin de créer un site Web convivial où vous pouvez afficher les informations sur les groupes à travers plusieurs visualisations de données. Ce projet se concentre également sur la création d'événements/actions et sur leur visualisation.
     <br />
     <br /> 
   </p>
@@ -66,16 +66,13 @@ Server Open In http://localhost:8080/home
 <!-- ROADMAP -->
 ## Roadmap
 
-|-->HOME
-|-->ARTIST
-|  |--->[ ] liste de tout les artistes(cartes)
-|    |--->[ ] Description
-|      |--->[ ] Map
-|-->[ ] MAP
-    |--->[ ] liste des artistes présent dans la ville recherché
-
+- [ ] HOME
+- [ ] ARTIST
+- [ ] MAP
 
 Regardez notre [JamBoard](https://jamboard.google.com/d/1jU73aVwm4rNw5_GPL22fErTuJzbE6COGu4fxu_CPicY/edit?usp=sharing) pour voir comment nous nous sommes organisé
+
+Lien de l'[API](https://groupietrackers.herokuapp.com/api)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
