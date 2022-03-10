@@ -92,9 +92,18 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		r.ParseForm()
-		for _, strNumber := range r.Form["members"] {
-			intNumber, _ := strconv.Atoi(strNumber)
-			memberNumbers = append(memberNumbers, intNumber)
+		fmt.Println(r.Form)
+
+		if len(r.Form["members"]) > 0 {
+			for _, strNumber := range r.Form["members"] {
+				intNumber, _ := strconv.Atoi(strNumber)
+				memberNumbers = append(memberNumbers, intNumber)
+			}
+		} else if len(r.Form["savedMembers"]) > 0 {
+			for _, strNumber := range r.Form["savedMembers"] {
+				intNumber, _ := strconv.Atoi(strNumber)
+				memberNumbers = append(memberNumbers, intNumber)
+			}
 		}
 
 		if len(memberNumbers) > 0 {
@@ -105,7 +114,6 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 			}
-
 			listOfArtist = listmp
 		}
 	}
@@ -133,8 +141,6 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		listOfArtist = listmp
 	}
-	fmt.Println(memberNumbers)
-	fmt.Println(r.FormValue("savedMembers"))
 
 	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, members, Cookies{page, artistName, trieur, memberNumbers}})
 }
