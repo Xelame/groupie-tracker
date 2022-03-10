@@ -64,6 +64,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 				page = 1
 			} else {
 				page, _ = strconv.Atoi(r.FormValue("savedPage"))
+
 			}
 		} else {
 			page, _ = strconv.Atoi(r.FormValue("page"))
@@ -90,7 +91,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	sort.Ints(members)
 
 	if r.Method == "POST" {
-
+		r.ParseForm()
 		for _, strNumber := range r.Form["members"] {
 			intNumber, _ := strconv.Atoi(strNumber)
 			memberNumbers = append(memberNumbers, intNumber)
