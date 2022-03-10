@@ -45,9 +45,19 @@
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+1.1 Pour lancer le serveur vous devez ecrire de votre terminale:
+```sh
+go run backend.go
+```
+1.2 ou :
+```sh
+go run .
+```
+2 Cliquer sur le lien qui s'affiche dans le terminale
+```sh
+Server Open In http://localhost:8080/home
+```
+3 le [lien](http://localhost:8080/home) s'ouvrira dans votre navigateur sur la page d'accueil
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -56,19 +66,20 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] HOME
+- [ ] ARTIST
+- [ ] MAP
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+Regardez notre [JamBoard](https://jamboard.google.com/d/1jU73aVwm4rNw5_GPL22fErTuJzbE6COGu4fxu_CPicY/edit?usp=sharing) pour voir comment nous nous sommes organisé
+
+Lien de l'[API](https://groupietrackers.herokuapp.com/api)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
-<!-- CONTRIBUTING -->
-## Contributing
+<!-- CONTRIBUTING 
+## Contribution
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -81,38 +92,40 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>-->
 
 
 
-<!-- LICENSE -->
+<!-- LICENSE
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p> -->
 
 
 
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+- [ ] Yassine Ennouhi - yassine.ennouhi@ynov.com
+- [ ] Alexandre Rolland - alexandre.rolland85@ynov.com
+- [ ] Mathis Cébile - mathis.cebile@ynov.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git](https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
-<!-- ACKNOWLEDGMENTS -->
+<!-- ACKNOWLEDGMENTS 
 ## Acknowledgments
 
 * []()
 * []()
 * []()
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>-->
 
 
 

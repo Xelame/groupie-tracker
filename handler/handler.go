@@ -9,11 +9,6 @@ import (
 )
 
 var PATH = []string{}
-
-//var Locationtemp = OpenTemplate("locations")
-//var Listtemp = OpenTemplate("index")
-//var ArtistTemp = OpenTemplate("artist")
-//var HomeTemp = OpenTemplate("home")
 var FormRoute = []string{"pages"}
 var ListOfArtist []Artist
 var forbiddenInput = []string{"{", "=>", "}", ";", ">", "<", "&", "+", "-", "%", "%q", "\n", "#", "~", "`", "^", "(", ")", "[", "]", "|"}
@@ -29,10 +24,11 @@ func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 		} else {
 			AllArtistsHandler(rw, r)
 		}
+	} else if PATH[0] == "home" || PATH[0] == "" {
+		HomeHandler(rw, r)
 	} else {
 		Error404Handler(rw, r)
 	}
-
 }
 
 func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
@@ -322,4 +318,11 @@ func CheckForbiddenInput(str string) bool { //range through the form value to ch
 	return result
 }
 
-//func HomeHandler(w http.ResponseWriter, r *http.Request) {
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	HomeTemp, erR := OpenTemplate("home")
+	if erR != nil {
+		fmt.Fprint(w, "Not working")
+		return
+	}
+	HomeTemp.Execute(w, nil)
+}

@@ -2,7 +2,7 @@
   font-family: Shockwave;
   src: local("Helvetica Neue Bold"),
        local("HelveticaNeue-Bold"),
-       url(./font/shockwave/Shockwave.ttf);
+       url(/static/font/Shockwave.ttf);
   font-weight: bold;
 }
 
@@ -11,12 +11,20 @@ body {
   background-image:url(/static/img/84248.png);
   background-repeat:no-repeat;
   background-size: cover;
-  font-family: "Shockwave", serif;
   margin: 0;
 }
 header{
   background-color: white;
 }
+
+.title{
+ font-family: Shockwave;
+ color: gainsboro;
+ font-size: 56px;
+ text-align: center;
+ margin-top: 240px;
+}
+
 nav {
   position: relative;
   right: 0;

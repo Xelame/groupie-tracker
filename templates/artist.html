@@ -3,21 +3,24 @@
     <head>
         <meta charset="UTF-8">
         <title>{{.Name}}</title>
-        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/static/css/style.css">
     </head>
     <body>
         {{template "navbar"}}
+        <CENTER>
         <div>
-            {{.Image}}
+            <img src="{{.Image}}" alt="{{.Name}}"> 
         </div>
+        </CENTER>
         <div>
             {{.Description}}
         </div>
         <div>
-            <!-- iframe Google API-->
+        <!-- iframe Google API-->
         </div>
         <div>
-            {{.Locations}}
+        {{.Location}}
+       </iframe>
         </div>
     </body>
 </html>
