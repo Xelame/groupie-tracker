@@ -33,9 +33,10 @@ func GetUrl(r *http.Request) []string {
 	return path
 }
 
-func OpenTemplate(fileName string) *template.Template {
-	tmpl := template.Must(template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html", "./templates/components/navbar.html"))
-	return tmpl
+func OpenTemplate(fileName string) (*template.Template, error) {
+	tmpl, err := template.ParseFiles(fmt.Sprintf("./templates/%s.html", fileName), "./templates/components/card.html", "./templates/components/navbar.html")
+	return tmpl, err
+
 }
 
 func ArtistTrie(list []Artist, categorie string) {
@@ -68,15 +69,15 @@ func ArtistTrie(list []Artist, categorie string) {
 }
 
 func RemoveDuplicateInt(intSlice []int) []int {
-    allKeys := make(map[int]bool)
-    list := []int{}
-    for _, item := range intSlice {
-        if _, value := allKeys[item]; !value {
-            allKeys[item] = true
-            list = append(list, item)
-        }
-    }
-    return list
+	allKeys := make(map[int]bool)
+	list := []int{}
+	for _, item := range intSlice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
 }
 
 // GET DESCRIPTION PART ________________________________________________________________________________________________________

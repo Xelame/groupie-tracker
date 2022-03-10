@@ -10,10 +10,10 @@ import (
 
 var PATH = []string{}
 
-var Locationtemp = OpenTemplate("locations")
-var Listtemp = OpenTemplate("index")
-var ArtistTemp = OpenTemplate("artist")
-var HomeTemp = OpenTemplate("home")
+//var Locationtemp = OpenTemplate("locations")
+//var Listtemp = OpenTemplate("index")
+//var ArtistTemp = OpenTemplate("artist")
+//var HomeTemp = OpenTemplate("home")
 var FormRoute = []string{"pages"}
 var ListOfArtist []Artist
 
@@ -44,6 +44,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	var page int
 	var members []int
 	var memberNumbers []int
+	var err error
 
 	SearchInApi("artists", &listOfArtist)
 
@@ -52,6 +53,14 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 
 		if r.FormValue("artists") == "" {
 			artistName = r.FormValue("savedArtists")
+		} else if strings.Contains(r.FormValue("artists"), "{") {
+			errortmpl, erR := OpenTemplate("err400")
+			if erR != nil {
+				fmt.Fprint(w, "Not working")
+				return
+			}
+			errortmpl.Execute(w, nil)
+			return
 		} else {
 			artistName = r.FormValue("artists")
 		}
@@ -66,11 +75,27 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 			if r.FormValue("savedPage") == "" {
 				page = 1
 			} else {
-				page, _ = strconv.Atoi(r.FormValue("savedPage"))
-
+				page, err = strconv.Atoi(r.FormValue("savedPage"))
+				if err != nil {
+					errortmpl, erR := OpenTemplate("err500")
+					if erR != nil {
+						fmt.Fprint(w, "Not working")
+						return
+					}
+					errortmpl.Execute(w, nil)
+					return
+				}
 			}
 		} else {
-			page, _ = strconv.Atoi(r.FormValue("page"))
+			page, err = strconv.Atoi(r.FormValue("page"))
+			if err != nil {
+				errortmpl, erR := OpenTemplate("err500")
+				if erR != nil {
+					fmt.Fprint(w, "Not working")
+				}
+				errortmpl.Execute(w, nil)
+				return
+			}
 		}
 
 		for i := 0; i < len(listOfArtist); i++ {
@@ -100,7 +125,11 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 			print(strNumber)
 			memberNumbers = append(memberNumbers, intNumber)
 			if err != nil {
-				OpenTemplate("err500").Execute(w, nil)
+				errortmpl, erR := OpenTemplate("err500")
+				if erR != nil {
+					fmt.Fprint(w, "Not working")
+				}
+				errortmpl.Execute(w, nil)
 				return
 			}
 		}
@@ -143,13 +172,30 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(memberNumbers)
 	fmt.Println(r.FormValue("savedMembers"))
-
+	Listtemp, erR := OpenTemplate("index")
+	if erR != nil {
+		fmt.Fprint(w, "Not working")
+	}
 	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, members, Cookies{page, artistName, trieur, memberNumbers}})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	var artist Artist
-	SearchInApi(fmt.Sprintf("artists/%s", PATH[1]), &artist)
+	err := SearchInApi(fmt.Sprintf("artists/%s", PATH[1]), &artist)
+	ArtistTemp, erR := OpenTemplate("artist")
+	if erR != nil {
+		fmt.Fprint(w, "Not working")
+		return
+	}
+	if err != nil {
+		errortmpl, erR := OpenTemplate("err500")
+		if erR != nil {
+			fmt.Fprint(w, "Not working")
+			return
+		}
+		errortmpl.Execute(w, nil)
+		return
+	}
 	GetWiki(&artist)
 	ArtistTemp.Execute(w, artist) // En cours
 }
@@ -162,15 +208,45 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	var listOfListsOfLocations [][]string
 	var listOfLocations []string
 
-	SearchInApi("locations", &locations)
+	err1 := SearchInApi("locations", &locations)
 	listOfArtist := &[]Artist{}
-	SearchInApi("artists", listOfArtist)
+	if err1 != nil {
+		errortmpl, erR := OpenTemplate("err500")
+		if erR != nil {
+			fmt.Fprint(rw, "Not working")
+		}
+		errortmpl.Execute(rw, nil)
+		return
+	}
+	err2 := SearchInApi("artists", listOfArtist)
 	var listOfDates Dates
-	SearchInApi("dates", &listOfDates)
+	if err2 != nil {
+		errortmpl, erR := OpenTemplate("err500")
+		if erR != nil {
+			fmt.Fprint(rw, "Not working")
+		}
+		errortmpl.Execute(rw, nil)
+		return
+	}
+	err3 := SearchInApi("dates", &listOfDates)
+	if err3 != nil {
+		errortmpl, erR := OpenTemplate("err500")
+		if erR != nil {
+			fmt.Fprint(rw, "Not working")
+		}
+		errortmpl.Execute(rw, nil)
+		return
+	}
 	var listOfRelations Relations
-	SearchInApi("relation", &listOfRelations)
-	fmt.Println(listOfRelations.Index[0].DatesLocations["los_angeles-usa"])
-
+	err4 := SearchInApi("relation", &listOfRelations)
+	if err4 != nil {
+		errortmpl, erR := OpenTemplate("err500")
+		if erR != nil {
+			fmt.Fprint(rw, "Not working")
+		}
+		errortmpl.Execute(rw, nil)
+		return
+	}
 	for i := 0; i < len(locations.Index); i++ {
 		listOfListsOfLocations = append(listOfListsOfLocations, locations.Index[i].Locations)
 	}
@@ -198,6 +274,11 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 		}
 	}
 	start := Loc{ArtistsinArea, location, RemoveDuplicateStr(listOfLocations)}
+	Locationtemp, erR := OpenTemplate("locations")
+	if erR != nil {
+		fmt.Fprint(rw, "Not working")
+		return
+	}
 	Locationtemp.Execute(rw, start)
 }
 
@@ -214,7 +295,12 @@ func RemoveDuplicateStr(strSlice []string) []string { //We use this function to 
 }
 
 func Error404Handler(rw http.ResponseWriter, r *http.Request) {
-	OpenTemplate("err404").Execute(rw, nil)
+	errortmpl, erR := OpenTemplate("err404")
+	if erR != nil {
+		fmt.Fprint(rw, "Not working")
+		return
+	}
+	errortmpl.Execute(rw, nil)
 }
 
 //func HomeHandler(w http.ResponseWriter, r *http.Request) {

@@ -10,7 +10,7 @@
         <label for="locations">Choose a location:</label>
         <form action="/locations" method="post">
         <select name="locations" id="locations">
-        <option value="name">--Please choose an option--</option>
+        <option value="name">--Please choose a location--</option>
         {{range .ListOfLocations}}
         <option >{{.}}</option>
          {{end}}
