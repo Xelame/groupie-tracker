@@ -3,60 +3,12 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 var PATH = []string{}
-
-type ArtistHandlerData struct {
-	ListOfArtists []Artist
-	PageNumber    []int
-	SavedData     Cookies
-}
-
-type Cookies struct {
-	Page      int
-	SearchBar string
-	Trie      string
-}
-
-type Artist struct {
-	Id           int
-	Image        string
-	Name         string
-	Members      []string
-	CreationDate int
-	FirstAlbum   string
-	Locations    string
-	ConcertDates string
-	Relations    string
-	Description  string
-}
-
-type Dates struct {
-	Id    int
-	Dates []string
-}
-
-type Locations struct {
-	Index []struct {
-		ID        int
-		Locations []string
-		Dates     string
-		Trie      string
-	}
-}
-
-type Loc struct {
-	Artists  []string
-	Location string
-}
-
-type Relations struct {
-	ID             int
-	DatesLocations interface{}
-}
 
 var Locationtemp = OpenTemplate("locations")
 var Listtemp = OpenTemplate("index")
@@ -87,6 +39,8 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	var artistName string
 	var trieur string
 	var page int
+	var members []int
+	var memberNumbers []int
 
 	SearchInApi("artists", &listOfArtist)
 
@@ -126,8 +80,43 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		ArtistTrie(listOfArtist, trieur)
 	}
 
+	listmp = []Artist{}
+
+	for _, artist := range listOfArtist {
+		members = append(members, len(artist.Members))
+	}
+
+	members = RemoveDuplicateInt(members)
+	sort.Ints(members)
+
+	if r.Method == "POST" {
+
+		for _, strNumber := range r.Form["members"] {
+			intNumber, _ := strconv.Atoi(strNumber)
+			memberNumbers = append(memberNumbers, intNumber)
+		}
+
+		if len(memberNumbers) > 0 {
+			for _, number := range memberNumbers {
+				for _, artist := range listOfArtist {
+					if len(artist.Members) == number {
+						listmp = append(listmp, artist)
+					}
+				}
+			}
+
+			fmt.Println(r.Form)
+
+			listOfArtist = listmp
+		}
+	}
+
 	for i := 1; i <= len(listOfArtist)/12+1; i++ {
 		pages = append(pages, i)
+	}
+
+	if len(pages) < 2 {
+		pages = []int{}
 	}
 
 	if r.Method == "POST" {
@@ -138,15 +127,6 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			listmp = listOfArtist[12*(page-1) : 12*page]
 		}
-
-		fmt.Println("-----------------------------------------------")
-		fmt.Println("\nLa recherche des artistes=", artistName, "!")
-		fmt.Println("Avant c'était", r.FormValue("savedArtists"), "!")
-		fmt.Printf("\nSur la page%d!\n", page)
-		fmt.Println("Avant c'était", r.FormValue("savedPage"), "!")
-		fmt.Println("\nTrie par ", r.FormValue("trie"), "!")
-		fmt.Println("Avant c'était", r.FormValue("savedTrie"), "!")
-
 	}
 
 	if !isPaginated && len(listOfArtist) > 12 {
@@ -155,7 +135,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		listOfArtist = listmp
 	}
 
-	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, Cookies{page, artistName, trieur}})
+	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, members, Cookies{page, artistName, trieur, memberNumbers}})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {

@@ -52,11 +52,18 @@
                     {{ end }}  
                   </optgroup>
             </select>
+                    <div>
+                      <input type="checkbox" name="members" value="{{.}}" checked>
+                      <label>{{.}}</label>
+                    </div>
+                {{ else }}
+                    <div>
+                        <input type="checkbox" name="members" value="{{.}}">
+                        <label>{{.}}</label>
+                    </div>
+                {{ end }}
+            {{ end }}
 
-            <div>
-                <input type="checkbox" id="coding" name="interest" value="coding">
-                <label for="coding">Développement</label>
-              </div>
             <button type="submit">Rechercher</button>
         </form>
         
@@ -75,6 +82,7 @@
                 <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
                 <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
                 <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">
+                <input type="hidden" name="savedMembers" value="{{.SavedData.PinChecked}}">
             </form>
         </form>
     </body>
