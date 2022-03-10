@@ -63,10 +63,6 @@
             <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
             <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
             <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">
-            {{ range .SavedData.PinChecked }}
-            <input type="hidden" name="savedMembers" value="{{.}}">
-            {{ end }}
-
             <button type="submit">Rechercher</button>
         </form>
         

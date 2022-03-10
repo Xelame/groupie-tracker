@@ -60,7 +60,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if r.FormValue("page") == "" {
-			if r.FormValue("savedPage") == "" {
+			if r.FormValue("savedPage") == "" || r.FormValue("savedPage") == "0" {
 				page = 1
 			} else {
 				page, _ = strconv.Atoi(r.FormValue("savedPage"))
@@ -92,7 +92,6 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		r.ParseForm()
-		fmt.Println(r.Form)
 
 		if len(r.Form["members"]) > 0 {
 			for _, strNumber := range r.Form["members"] {
@@ -104,6 +103,8 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 				intNumber, _ := strconv.Atoi(strNumber)
 				memberNumbers = append(memberNumbers, intNumber)
 			}
+		} else {
+			memberNumbers = members
 		}
 
 		if len(memberNumbers) > 0 {
@@ -122,10 +123,6 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		pages = append(pages, i)
 	}
 
-	if len(pages) < 2 {
-		pages = []int{}
-	}
-
 	if r.Method == "POST" {
 		isPaginated = true
 
@@ -134,6 +131,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			listmp = listOfArtist[12*(page-1) : 12*page]
 		}
+
 	}
 
 	if !isPaginated && len(listOfArtist) > 12 {
@@ -155,7 +153,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	var locations Locations
 	var listOfLocations string
-	var indexes []int
 	var ArtistsinArea []string
 
 	SearchInApi("locations", &locations)
@@ -167,7 +164,6 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 			for j := 0; j < len(locations.Index[i].Locations); j++ {
 				if strings.Contains(strings.ToUpper(locations.Index[i].Locations[j]), strings.ToUpper(strings.ReplaceAll(r.FormValue("locations"), " ", "_"))) {
 					listOfLocations = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
-					indexes = append(indexes, i)
 					ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name)
 				}
 			}
