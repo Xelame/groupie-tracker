@@ -42,6 +42,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	var members []int
 	var memberNumbers []int
 	var err error
+	listOfPin := make(map[int]bool)
 
 	SearchInApi("artists", &listOfArtist)
 
@@ -69,7 +70,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if r.FormValue("page") == "" {
-			if r.FormValue("savedPage") == "" {
+			if r.FormValue("savedPage") == "" || r.FormValue("savedPage") == "0" {
 				page = 1
 			} else {
 				page, err = strconv.Atoi(r.FormValue("savedPage"))
@@ -116,21 +117,25 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	members = RemoveDuplicateInt(members)
 	sort.Ints(members)
 
+	for _, number := range members {
+		listOfPin[number] = false
+	}
+
 	if r.Method == "POST" {
 		r.ParseForm()
-		for _, strNumber := range r.Form["members"] {
-			intNumber, err := strconv.Atoi(strNumber)
-			print(strNumber)
-			memberNumbers = append(memberNumbers, intNumber)
-			if err != nil {
-				errortmpl, erR := OpenTemplate("err500")
-				if erR != nil {
-					fmt.Fprint(w, "Not working")
-					return
-				}
-				errortmpl.Execute(w, nil)
-				return
+
+		if len(r.Form["members"]) > 0 {
+			for _, strNumber := range r.Form["members"] {
+				intNumber, _ := strconv.Atoi(strNumber)
+				memberNumbers = append(memberNumbers, intNumber)
 			}
+		} else if len(r.Form["savedMembers"]) > 0 {
+			for _, strNumber := range r.Form["savedMembers"] {
+				intNumber, _ := strconv.Atoi(strNumber)
+				memberNumbers = append(memberNumbers, intNumber)
+			}
+		} else {
+			memberNumbers = members
 		}
 
 		if len(memberNumbers) > 0 {
@@ -141,17 +146,12 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 			}
-
 			listOfArtist = listmp
 		}
 	}
 
 	for i := 1; i <= len(listOfArtist)/12+1; i++ {
 		pages = append(pages, i)
-	}
-
-	if len(pages) < 2 {
-		pages = []int{}
 	}
 
 	if r.Method == "POST" {
@@ -162,6 +162,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			listmp = listOfArtist[12*(page-1) : 12*page]
 		}
+
 	}
 
 	if !isPaginated && len(listOfArtist) > 12 {
@@ -169,14 +170,32 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		listOfArtist = listmp
 	}
-	fmt.Println(memberNumbers)
-	fmt.Println(r.FormValue("savedMembers"))
+
+	if len(memberNumbers) < len(members) {
+		for _, number := range members {
+			isChecked := false
+			for _, check := range memberNumbers {
+				if check == number {
+					isChecked = true
+				}
+			}
+			if isChecked {
+				listOfPin[number] = true
+			} else {
+				listOfPin[number] = false
+			}
+		}
+	} else {
+		for _, number := range members {
+			listOfPin[number] = false
+		}
+	}
 	Listtemp, erR := OpenTemplate("index")
 	if erR != nil {
 		fmt.Fprint(w, "Not working")
 		return
 	}
-	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, members, Cookies{page, artistName, trieur, memberNumbers}})
+	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, listOfPin, Cookies{page, artistName, trieur, memberNumbers}})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
@@ -203,7 +222,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 func LocationsHandler(rw http.ResponseWriter, r *http.Request) { //used to get all concert locations and display artists in area and their date(s) of concert
 	var locations Locations
 	var location string
-	var indexes []int
 	var ArtistsinArea []string
 	var listOfListsOfLocations [][]string
 	var listOfLocations []string
@@ -259,7 +277,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) { //used to get a
 			listOfLocations = append(listOfLocations, listOfListsOfLocations[j][s]) //put all the concert locations in this list, later we will remove the duplicates
 		}
 	}
-	sort.Sort(sort.StringSlice(listOfLocations)) //Sort List of Locations alphabetically
+	sort.Strings(listOfLocations) //Sort List of Locations alphabetically
 	// fmt.Println("1:", len(listOfLocations))
 	// fmt.Println("2:", len(RemoveDuplicateStr(listOfLocations))) --> some useful prints to check if we really remove the duplicate strings
 	if r.Method == "POST" {
@@ -269,7 +287,6 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) { //used to get a
 				if strings.Contains(strings.ToUpper(locations.Index[i].Locations[j]), strings.ToUpper(strings.ReplaceAll(r.FormValue("locations"), " ", "_"))) {
 					location = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j] //to be able to display the google map
 					//date = append(date, listOfDates.Index[i].Dates[j])
-					indexes = append(indexes, i)
 					for s := 0; s < len(listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]]); s++ {
 						ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name+" in "+listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]][s]) //we get the concert dates from relations because some artist have multiple dates on the same area (example : SOJA in playa del carmen)
 					}

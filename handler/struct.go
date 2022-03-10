@@ -3,7 +3,7 @@ package handler
 type ArtistHandlerData struct {
 	ListOfArtists []Artist
 	PageNumber    []int
-	MembersFilter []int
+	MembersFilter map[int]bool
 	SavedData     Cookies
 }
 
