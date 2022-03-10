@@ -62,13 +62,13 @@ Server Open In http://localhost:8080/home
 
 _Ensuite vous pouvez naviguez sur le site librement, si le site ne s'affiche pas correctement changez de navgateur.
 
-## Artists page
+### Artists page
  
  Sur cette [page](http://localhost:8080/artists) vous trouverez tous les artistes et groupes d'artistes.
  Vous avez à disposition une barre de recherche et un filtre afin de rechercher un ou plusieurs groupe(s) en particulier.
  Une fois que vous aurez trouvez votre bonheur il suffit de cliquer sur la carte et vous aurez acces à toutes les information concernant le groupe.
 
-# Locations page
+### Locations page
 
 Sur cette [page](http://localhost:8080/locations) vous trouverez la Map utilisant une API Google
 Vous trouvez également une barre de recherche afin de savoir où et quand s'est produit vous artistes préférés.
