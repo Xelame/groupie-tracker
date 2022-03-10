@@ -63,13 +63,19 @@ var ListOfArtist []Artist
 
 func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 	PATH = GetUrl(r)
+	if PATH[0] == "locations" {
+		LocationsHandler(rw, r)
+	}
 	if PATH[0] == "artists" {
 		if len(PATH) > 1 {
 			ArtistHandler(rw, r)
 		} else {
 			AllArtistsHandler(rw, r)
 		}
+	} else {
+		Error404Handler(rw, r)
 	}
+
 }
 
 func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +152,7 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 	sort.Sort(sort.StringSlice(listOfLocations)) //Sort List of Locations alphabetically
 	fmt.Println("1:", len(listOfLocations))
-	fmt.Println("2:", len(removeDuplicateStr(listOfLocations)))
+	fmt.Println("2:", len(RemoveDuplicateStr(listOfLocations)))
 	if r.Method == "POST" {
 		fmt.Println(r.FormValue("locations"))
 		for i := 0; i <= 51; i++ {
@@ -162,11 +168,11 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	start := Loc{ArtistsinArea, location, removeDuplicateStr(listOfLocations)}
+	start := Loc{ArtistsinArea, location, RemoveDuplicateStr(listOfLocations)}
 	Maintemp.Execute(rw, start)
 }
 
-func removeDuplicateStr(strSlice []string) []string { //We use this function to remove duplicate strings in an array of strings
+func RemoveDuplicateStr(strSlice []string) []string { //We use this function to remove duplicate strings in an array of strings
 	allKeys := make(map[string]bool)
 	list := []string{}
 	for _, item := range strSlice {
@@ -176,4 +182,8 @@ func removeDuplicateStr(strSlice []string) []string { //We use this function to 
 		}
 	}
 	return list
+}
+
+func Error404Handler(rw http.ResponseWriter, r *http.Request) {
+	OpenTemplate("err404").Execute(rw, nil)
 }
