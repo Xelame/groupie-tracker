@@ -41,6 +41,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	var page int
 	var members []int
 	var memberNumbers []int
+	listOfPin := make(map[int]bool)
 
 	SearchInApi("artists", &listOfArtist)
 
@@ -89,6 +90,10 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 
 	members = RemoveDuplicateInt(members)
 	sort.Ints(members)
+
+	for _, number := range members {
+		listOfPin[number] = false
+	}
 
 	if r.Method == "POST" {
 		r.ParseForm()
@@ -140,7 +145,27 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		listOfArtist = listmp
 	}
 
-	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, members, Cookies{page, artistName, trieur, memberNumbers}})
+	if len(memberNumbers) < len(members) {
+		for _, number := range members {
+			isChecked := false
+			for _, check := range memberNumbers {
+				if check == number {
+					isChecked = true
+				}
+			}
+			if isChecked {
+				listOfPin[number] = true
+			} else {
+				listOfPin[number] = false
+			}
+		}
+	} else {
+		for _, number := range members {
+			listOfPin[number] = false
+		}
+	}
+
+	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, listOfPin, Cookies{page, artistName, trieur, memberNumbers}})
 }
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {

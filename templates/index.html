@@ -52,11 +52,18 @@
                     {{ end }}  
                   </optgroup>
             </select>
-            {{ range .MembersFilter}}
+            {{ range $number, $isChecked := .MembersFilter}}
+                {{ if $isChecked }}
                     <div>
-                        <input type="checkbox" name="members" value="{{.}}">
-                        <label>{{.}}</label>
+                        <input type="checkbox" name="members" value="{{$number}}" checked>
+                        <label>{{$number}}</label>
                     </div>
+                {{ else }}
+                    <div>
+                        <input type="checkbox" name="members" value="{{$number}}">
+                        <label>{{$number}}</label>
+                    </div>
+                {{ end }}
             {{ end }}
 
             <!-- Saved data in form ^^ -->
