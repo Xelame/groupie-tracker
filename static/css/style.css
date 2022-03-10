@@ -16,6 +16,15 @@ body {
 header{
   background-color: white;
 }
+
+.title{
+ font-family: Shockwave;
+ color: gainsboro;
+ font-size: 56px;
+ text-align: center;
+ margin-top: 240px;
+}
+
 nav {
   position: relative;
   right: 0;
@@ -135,6 +144,7 @@ nav a:nth-child(3):hover ~ #indicator {
   left: 70%;
   background: linear-gradient(130deg, purple, palevioletred);
 }
+
 /** Card */
 
 .cards-list {
