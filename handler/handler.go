@@ -28,7 +28,10 @@ func RoutingHandler(rw http.ResponseWriter, r *http.Request) {
 		} else {
 			AllArtistsHandler(rw, r)
 		}
+	} else {
+		Error404Handler(rw, r)
 	}
+
 }
 
 func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
@@ -148,31 +151,65 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 
 func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 	var locations Locations
-	var listOfLocations string
+	var location string
 	var indexes []int
 	var ArtistsinArea []string
+	var listOfListsOfLocations [][]string
+	var listOfLocations []string
 
 	SearchInApi("locations", &locations)
 	listOfArtist := &[]Artist{}
 	SearchInApi("artists", listOfArtist)
+	var listOfDates Dates
+	SearchInApi("dates", &listOfDates)
+	var listOfRelations Relations
+	SearchInApi("relation", &listOfRelations)
+	fmt.Println(listOfRelations.Index[0].DatesLocations["los_angeles-usa"])
 
+	for i := 0; i < len(locations.Index); i++ {
+		listOfListsOfLocations = append(listOfListsOfLocations, locations.Index[i].Locations)
+	}
+	for j := 0; j < 51; j++ {
+		for s := 0; s < len(listOfListsOfLocations[j]); s++ {
+			listOfLocations = append(listOfLocations, listOfListsOfLocations[j][s])
+		}
+	}
+	sort.Sort(sort.StringSlice(listOfLocations)) //Sort List of Locations alphabetically
+	fmt.Println("1:", len(listOfLocations))
+	fmt.Println("2:", len(RemoveDuplicateStr(listOfLocations)))
 	if r.Method == "POST" {
+		fmt.Println(r.FormValue("locations"))
 		for i := 0; i <= 51; i++ {
 			for j := 0; j < len(locations.Index[i].Locations); j++ {
 				if strings.Contains(strings.ToUpper(locations.Index[i].Locations[j]), strings.ToUpper(strings.ReplaceAll(r.FormValue("locations"), " ", "_"))) {
-					listOfLocations = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
+					location = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
+					//date = append(date, listOfDates.Index[i].Dates[j])
 					indexes = append(indexes, i)
-					ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name)
+					for s := 0; s < len(listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]]); s++ {
+						ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name+" in "+listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]][s]) //listOfDates.Index[i].Dates[j])
+					}
 				}
 			}
 		}
 	}
-	start := Loc{ArtistsinArea, listOfLocations}
-	fmt.Println(start)
+	start := Loc{ArtistsinArea, location, RemoveDuplicateStr(listOfLocations)}
 	Locationtemp.Execute(rw, start)
-	fmt.Println(ArtistsinArea)
-	fmt.Println(listOfLocations)
+}
 
+func RemoveDuplicateStr(strSlice []string) []string { //We use this function to remove duplicate strings in an array of strings
+	allKeys := make(map[string]bool)
+	list := []string{}
+	for _, item := range strSlice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
+}
+
+func Error404Handler(rw http.ResponseWriter, r *http.Request) {
+	OpenTemplate("err404").Execute(rw, nil)
 }
 
 //func HomeHandler(w http.ResponseWriter, r *http.Request) {

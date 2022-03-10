@@ -8,10 +8,10 @@ type ArtistHandlerData struct {
 }
 
 type Cookies struct {
-	Page      int
-	SearchBar string
-	Trie      string
-	PinChecked  []int
+	Page       int
+	SearchBar  string
+	Trie       string
+	PinChecked []int
 }
 
 type Artist struct {
@@ -41,12 +41,16 @@ type Locations struct {
 	}
 }
 
-type Loc struct {
-	Artists  []string
-	Location string
+type Relations struct {
+	Index []struct {
+		ID             int
+		DatesLocations map[string][]string
+	}
 }
 
-type Relations struct {
-	ID             int
-	DatesLocations interface{}
+type Loc struct {
+	Artists         []string
+	Location        string
+	ListOfLocations []string
+	//Dates    []string
 }
