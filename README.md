@@ -108,9 +108,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
--[] Yassine Ennouhi - yassine.ennouhi@ynov.com
--[] Alexandre Rolland - alexandre.rolland85@ynov.com
--[] Mathis Cébile - mathis.cebile@ynov.com
+- [ ] Yassine Ennouhi - yassine.ennouhi@ynov.com
+- [ ] Alexandre Rolland - alexandre.rolland85@ynov.com
+- [ ] Mathis Cébile - mathis.cebile@ynov.com
 
 Project Link: [https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git](https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git)
 
