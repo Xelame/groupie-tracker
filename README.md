@@ -84,9 +84,9 @@ Don't forget to give the project a star! Thanks again!
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request-->
+5. Open a Pull Request
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>-->
 
 
 
@@ -102,9 +102,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Yassine Ennouhi - yassine.ennouhi@ynov.com
-Alexandre Rolland - alexandre.rolland85@ynov.com
-Mathis Cébile - mathis.cebile@ynov.com
+_Yassine Ennouhi - yassine.ennouhi@ynov.com
+_Alexandre Rolland - alexandre.rolland85@ynov.com
+_Mathis Cébile - mathis.cebile@ynov.com
 
 Project Link: [https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git](https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git)
 
