@@ -105,8 +105,6 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			fmt.Println(r.Form)
-
 			listOfArtist = listmp
 		}
 	}
@@ -134,6 +132,8 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		listOfArtist = listmp
 	}
+	fmt.Println(memberNumbers)
+	fmt.Println(r.FormValue("savedMembers"))
 
 	Listtemp.Execute(w, ArtistHandlerData{listOfArtist, pages, members, Cookies{page, artistName, trieur, memberNumbers}})
 }

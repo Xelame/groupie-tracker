@@ -52,16 +52,11 @@
                     {{ end }}  
                   </optgroup>
             </select>
-                    <div>
-                      <input type="checkbox" name="members" value="{{.}}" checked>
-                      <label>{{.}}</label>
-                    </div>
-                {{ else }}
+            {{ range .MembersFilter}}
                     <div>
                         <input type="checkbox" name="members" value="{{.}}">
                         <label>{{.}}</label>
                     </div>
-                {{ end }}
             {{ end }}
 
             <button type="submit">Rechercher</button>
