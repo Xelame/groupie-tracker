@@ -96,8 +96,13 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 		for _, strNumber := range r.Form["members"] {
-			intNumber, _ := strconv.Atoi(strNumber)
+			intNumber, err := strconv.Atoi(strNumber)
+			print(strNumber)
 			memberNumbers = append(memberNumbers, intNumber)
+			if err != nil {
+				OpenTemplate("err500").Execute(w, nil)
+				return
+			}
 		}
 
 		if len(memberNumbers) > 0 {
