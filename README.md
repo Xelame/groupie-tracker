@@ -32,6 +32,7 @@
    ```sh
    git clone https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git
    ```
+_Vous devrez voir le répertoire Groupie-Tracker ainsi que son contenue
 2. Installez Golang (si ce n'ai pas déjà le cas)
    ```sh
    sudo apt install golang
@@ -45,7 +46,7 @@
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-1.1 Pour lancer le serveur vous devez ecrire de votre terminale:
+1.1 Pour lancer le serveur vous devez écrire de votre terminal:
 ```sh
 go run backend.go
 ```
@@ -53,57 +54,36 @@ go run backend.go
 ```sh
 go run .
 ```
-2 Cliquer sur le lien qui s'affiche dans le terminale
+2 ctrl + clic sur le lien qui s'affiche dans votre terminal afin de l'ouvrir sur le navigateur de votre choix:
 ```sh
 Server Open In http://localhost:8080/home
 ```
 3 le [lien](http://localhost:8080/home) s'ouvrira dans votre navigateur sur la page d'accueil
 
+_Ensuite vous pouvez naviguez sur le site librement, si le site ne s'affiche pas correctement changez de navgateur.
+
+## Artists page
+ 
+ Sur cette [page](http://localhost:8080/artists) vous trouverez tous les artistes et groupes d'artistes.
+ Vous avez à disposition une barre de recherche et un filtre afin de rechercher un ou plusieurs groupe(s) en particulier.
+ Une fois que vous aurez trouvez votre bonheur il suffit de cliquer sur la carte et vous aurez acces à toutes les information concernant le groupe.
+
+# Locations page
+
+Sur cette [page](http://localhost:8080/locations) vous trouverez la Map utilisant une API Google
+Vous trouvez également une barre de recherche afin de savoir où et quand s'est produit vous artistes préférés.
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] HOME
-- [ ] ARTIST
-- [ ] MAP
+- [ ] Lien de l'[API](https://groupietrackers.herokuapp.com/api)
+
 
 Regardez notre [JamBoard](https://jamboard.google.com/d/1jU73aVwm4rNw5_GPL22fErTuJzbE6COGu4fxu_CPicY/edit?usp=sharing) pour voir comment nous nous sommes organisé
 
-Lien de l'[API](https://groupietrackers.herokuapp.com/api)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING 
-## Contribution
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#top">back to top</a>)</p>-->
-
-
-
-<!-- LICENSE
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#top">back to top</a>)</p> -->
-
-
 
 <!-- CONTACT -->
 ## Contact
@@ -115,19 +95,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 Project Link: [https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git](https://git.ytrack.learn.ynov.com/YENNOUHI/groupie-tracker.git)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS 
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#top">back to top</a>)</p>-->
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
