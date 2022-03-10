@@ -204,7 +204,7 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	ArtistTemp.Execute(w, artist) // En cours
 }
 
-func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
+func LocationsHandler(rw http.ResponseWriter, r *http.Request) { //used to get all concert locations and display artists in area and their date(s) of concert
 	var locations Locations
 	var location string
 	var indexes []int
@@ -256,26 +256,26 @@ func LocationsHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for i := 0; i < len(locations.Index); i++ {
-		listOfListsOfLocations = append(listOfListsOfLocations, locations.Index[i].Locations)
+		listOfListsOfLocations = append(listOfListsOfLocations, locations.Index[i].Locations) //in the locations struct, the locations is a list of list of strings, i.e each artist has a list of locations
 	}
 	for j := 0; j < 51; j++ {
 		for s := 0; s < len(listOfListsOfLocations[j]); s++ {
-			listOfLocations = append(listOfLocations, listOfListsOfLocations[j][s])
+			listOfLocations = append(listOfLocations, listOfListsOfLocations[j][s]) //put all the concert locations in this list, later we will remove the duplicates
 		}
 	}
 	sort.Sort(sort.StringSlice(listOfLocations)) //Sort List of Locations alphabetically
-	fmt.Println("1:", len(listOfLocations))
-	fmt.Println("2:", len(RemoveDuplicateStr(listOfLocations)))
+	// fmt.Println("1:", len(listOfLocations))
+	// fmt.Println("2:", len(RemoveDuplicateStr(listOfLocations))) --> some useful prints to check if we really remove the duplicate strings
 	if r.Method == "POST" {
 		fmt.Println(r.FormValue("locations"))
 		for i := 0; i <= 51; i++ {
 			for j := 0; j < len(locations.Index[i].Locations); j++ {
 				if strings.Contains(strings.ToUpper(locations.Index[i].Locations[j]), strings.ToUpper(strings.ReplaceAll(r.FormValue("locations"), " ", "_"))) {
-					location = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j]
+					location = "https:www.google.com/maps/embed/v1/place?key=AIzaSyAXXPpGp3CYZDcUSiE2YRlNID4ybzoZa7o&q=" + locations.Index[i].Locations[j] //to be able to display the google map
 					//date = append(date, listOfDates.Index[i].Dates[j])
 					indexes = append(indexes, i)
 					for s := 0; s < len(listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]]); s++ {
-						ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name+" in "+listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]][s]) //listOfDates.Index[i].Dates[j])
+						ArtistsinArea = append(ArtistsinArea, (*listOfArtist)[i].Name+" in "+listOfRelations.Index[i].DatesLocations[locations.Index[i].Locations[j]][s]) //we get the concert dates from relations because some artist have multiple dates on the same area (example : SOJA in playa del carmen)
 					}
 				}
 			}
@@ -311,7 +311,7 @@ func Error404Handler(rw http.ResponseWriter, r *http.Request) {
 	errortmpl.Execute(rw, nil)
 }
 
-func CheckForbiddenInput(str string) bool {
+func CheckForbiddenInput(str string) bool { //range through the form value to check if it contains a dangerous character
 	result := false
 	for i := 0; i < len(forbiddenInput); i++ {
 		if strings.Contains(str, forbiddenInput[i]) {
