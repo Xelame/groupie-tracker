@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Artist</title>
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+    <body>
+        {{template "navbar"}}
+        <form action="/artists" method="post">
+            <input type="text" name="artists" value="{{.SavedData.SearchBar}}">
+
+            <select name="trie" onchange="this.form.submit()"> 
+                <option value="">Trier par :</option>
+                <optgroup label="Ordre alphabétique">
+                    {{ if (eq .SavedData.Trie "A") }}
+                        <option value="A" selected>A-Z</option>
+                    {{ else }}
+                        <option value="A">A-Z</option>
+                    {{ end }}
+
+                    {{ if (eq .SavedData.Trie "Z") }}
+                        <option value="Z" selected>Z-A</option>
+                    {{ else }}
+                        <option value="Z">Z-A</option>
+                    {{ end }}
+                  </optgroup>
+                  <optgroup label="Nombre de membres">
+                    {{ if (eq .SavedData.Trie "C") }}
+                        <option value="C" selected>Croissant</option>
+                    {{ else }}
+                        <option value="C">Croissant</option>
+                    {{ end }}  
+
+                    {{ if (eq .SavedData.Trie "D") }}
+                        <option value="D" selected>Décroissant</option>
+                    {{ else }}
+                        <option value="D">Décroissant</option>
+                    {{ end }}  
+                  </optgroup>
+                  <optgroup label="Âge">
+                    {{ if (eq .SavedData.Trie "O") }}
+                        <option value="O" selected>La plus vieille</option>
+                    {{ else }}
+                        <option value="O">La plus vieille</option>
+                    {{ end }}  
+
+                    {{ if (eq .SavedData.Trie "Y") }}
+                        <option value="Y" selected>La plus jeune</option>
+                    {{ else }}
+                        <option value="Y">La plus jeune</option>
+                    {{ end }}  
+                  </optgroup>
+            </select>
+            {{ range $number, $isChecked := .MembersFilter}}
+                {{ if $isChecked }}
+                    <div>
+                        <input type="checkbox" name="members" value="{{$number}}" checked>
+                        <label>{{$number}}</label>
+                    </div>
+                {{ else }}
+                    <div>
+                        <input type="checkbox" name="members" value="{{$number}}">
+                        <label>{{$number}}</label>
+                    </div>
+                {{ end }}
+            {{ end }}
+
+            <!-- Saved data in form ^^ -->
+            <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
+            <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
+            <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">
+            <button type="submit">Rechercher</button>
+        </form>
+        
+        <div class="cards-list">
+            {{range .ListOfArtists}} 
+              {{template "card" .}}
+            {{end}}    
+        </div>
+            <form action="/artists" method="post">
+                {{range .PageNumber}} 
+                    <button type="submit" name="page" value="{{.}}">{{.}}</button>
+                {{end}}   
+
+
+                <!-- Saved data in form ^^ -->
+                <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
+                <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
+                <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">
+                {{ range .SavedData.PinChecked }}
+                <input type="hidden" name="savedMembers" value="{{.}}">
+                {{ end }}
+            </form>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Artist</title>
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+    <body>
+        {{ template "navbar" }}
+        <label for="locations">Choose a location:</label>
+        <form action="/locations" method="post">
+        <select name="locations" id="locations">
+        <option value="name">--Please choose a location--</option>
+        {{range .ListOfLocations}}
+        <option >{{.}}</option>
+         {{end}}
+            <input type="submit" name="locations">
+        </form>
+       
+
+
+   
+</select>
+
+        <iframe
+        width="450"
+        height="250"
+        frameborder="0" style="border:0"
+        src="{{.Location}}">
+       </iframe>
+       <h3> Artists in Area: </h3>
+     {{ range .Artists }}
+       <li> {{.}} </li>
+       {{end}}
+    </body>
+</html>
