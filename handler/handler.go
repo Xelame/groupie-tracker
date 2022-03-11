@@ -190,7 +190,7 @@ func AllArtistsHandler(w http.ResponseWriter, r *http.Request) {
 			listOfPin[number] = false
 		}
 	}
-	Listtemp, erR := OpenTemplate("index")
+	Listtemp, erR := OpenTemplate("allartists")
 	if erR != nil {
 		fmt.Fprint(w, "Not working")
 		return
