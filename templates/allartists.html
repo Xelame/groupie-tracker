@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Artist</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    {{template "navbar"}}
+    <form action="/artists" method="post" class="filterbar">
+        <div class="filterpart">
+            <input type="text" name="artists" value="{{.SavedData.SearchBar}}" placeholder="Search by name ...">
+            <button type="submit">Rechercher</button>
+        </div>
+        <div class="filterpart">
+            <select name="trie" onchange="this.form.submit()">
+                <option value="">Trier par :</option>
+                <optgroup label="Ordre alphabétique">
+                    {{ if (eq .SavedData.Trie "A") }}
+                    <option value="A" selected>A-Z</option>
+                    {{ else }}
+                    <option value="A">A-Z</option>
+                    {{ end }}
+
+                    {{ if (eq .SavedData.Trie "Z") }}
+                    <option value="Z" selected>Z-A</option>
+                    {{ else }}
+                    <option value="Z">Z-A</option>
+                    {{ end }}
+                </optgroup>
+                <optgroup label="Nombre de membres">
+                    {{ if (eq .SavedData.Trie "C") }}
+                    <option value="C" selected>Croissant</option>
+                    {{ else }}
+                    <option value="C">Croissant</option>
+                    {{ end }}
+
+                    {{ if (eq .SavedData.Trie "D") }}
+                    <option value="D" selected>Décroissant</option>
+                    {{ else }}
+                    <option value="D">Décroissant</option>
+                    {{ end }}
+                </optgroup>
+                <optgroup label="Âge">
+                    {{ if (eq .SavedData.Trie "O") }}
+                    <option value="O" selected>La plus vieille</option>
+                    {{ else }}
+                    <option value="O">La plus vieille</option>
+                    {{ end }}
+
+                    {{ if (eq .SavedData.Trie "Y") }}
+                    <option value="Y" selected>La plus jeune</option>
+                    {{ else }}
+                    <option value="Y">La plus jeune</option>
+                    {{ end }}
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="filterpart">
+            <label>Nombre de membres</label>
+        </div>
+        <div class="filterpart">
+            <div class="checkbox">
+                {{ range $number, $isChecked := .MembersFilter}}
+                <div class="checkPin">
+                    {{ if $isChecked }}
+                    <input type="checkbox" name="members" value="{{$number}}" checked>
+                    <label>{{$number}}</label>
+                    {{ else }}
+                    <input type="checkbox" name="members" value="{{$number}}">
+                    <label>{{$number}}</label>
+                    {{ end }}
+                </div>
+                {{ end }}
+                <button type="submit">Filtrer</button> 
+            </div>
+        </div>
+
+        <!-- Saved data in form ^^ -->
+        <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
+        <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
+        <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">
+    </form>
+
+    <div class="cards-list">
+        {{range .ListOfArtists}}
+        {{template "card" .}}
+        {{end}}
+    </div>
+    <form action="/artists" method="post">
+        <div class="containpage">
+            <div class="center">
+                {{range .PageNumber}}
+                <button type="submit" class="pagination" name="page" value="{{.}}">{{.}}</button>
+                {{end}}
+            </div>
+
+        </div>
+
+        <!-- Saved data in form ^^ -->
+        <input type="hidden" name="savedPage" value="{{.SavedData.Page}}">
+        <input type="hidden" name="savedArtists" value="{{.SavedData.SearchBar}}">
+        <input type="hidden" name="savedTrie" value="{{.SavedData.Trie}}">
+        {{ range .SavedData.PinChecked }}
+        <input type="hidden" name="savedMembers" value="{{.}}">
+        {{ end }}
+    </form>
+    </form>
+</body>
+
+</html>

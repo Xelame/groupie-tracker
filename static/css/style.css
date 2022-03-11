@@ -13,16 +13,52 @@ body {
   background-size: cover;
   margin: 0;
 }
+
 header{
   background-color: white;
 }
 
 .title{
- font-family: Shockwave;
- color: gainsboro;
- font-size: 56px;
- text-align: center;
- margin-top: 240px;
+  min-height: 93.9vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Shockwave;
+  color: gainsboro;
+  font-size: 56px;
+  text-align: center;
+}
+
+.filterbar {
+  display: flex;
+  margin: 4px;
+  align-items: center;
+}
+
+.filterpart {
+  margin: 5px;
+}
+
+.checkbox {
+  display: flex;
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
+}
+
+.bio {
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  max-width: 60vw;
+  text-align: justify;
+}
+
+.cadrant {
+  float: left;
+  margin: 10px;
 }
 
 nav {
@@ -194,6 +230,29 @@ nav a:nth-child(3):hover ~ #indicator {
     -5px -5px 30px 15px rgba(0,0,0,0.22);
 }
 
+a {
+  text-decoration: none;
+}
 
+.containpage {
+  display: flex;
+  align-items: center;
+}
 
-/**/
+.center {
+  margin: auto;
+}
+
+.pagination {
+  margin: 16px;
+  font-family: Shockwave;
+  border: none;
+  border-radius: 100%;
+  background-color: white;
+  height: 32px;
+  width: 32px;
+}
+
+p {
+  color: white;
+}
