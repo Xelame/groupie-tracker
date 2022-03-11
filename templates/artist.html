@@ -7,20 +7,11 @@
     </head>
     <body>
         {{template "navbar"}}
-        <CENTER>
+
+        <div></div>
+        <div class="bio">
+            <img src="{{.Image}}" class="cadrant" alt="{{.Name}}"> 
+            <p>{{.Description}}</p>
         <div>
-            <img src="{{.Image}}" alt="{{.Name}}"> 
-        </div>
-        </CENTER>
-        <div>
-            {{.Description}}
-        </div>
-        <div>
-        <!-- iframe Google API-->
-        </div>
-        <div>
-        {{.Location}}
-       </iframe>
-        </div>
     </body>
 </html>
